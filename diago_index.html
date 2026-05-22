@@ -1,0 +1,2272 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>DIAGNOLYTIX — Your Health, Decoded</title>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,600;0,9..144,800;1,9..144,300&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg:#f5f2ec;--bg2:#eae6dd;--ink:#1a1a18;--ink2:#4a4a44;--ink3:#8a8a80;
+    --teal:#1a7f74;--teal-light:#2aa89a;--teal-pale:#d4efec;
+    --amber:#c97b2a;--amber-pale:#fdf0e0;
+    --red:#c0392b;--red-pale:#fde8e6;
+    --green:#1e7e5a;--green-pale:#dff5ec;
+    --border:#d4cfc5;--card:#fff;
+    --shadow:0 2px 20px rgba(26,26,24,0.08);--shadow-lg:0 8px 40px rgba(26,26,24,0.14);
+    --radius:14px;--radius-sm:8px;
+  }
+  *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+  html{scroll-behavior:smooth}
+  body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--ink);min-height:100vh;font-size:15px;line-height:1.6}
+  h1,h2,h3,h4{font-family:'Fraunces',serif;font-weight:600;line-height:1.15;letter-spacing:-0.02em}
+  h1{font-size:clamp(2.4rem,5vw,4rem)}h2{font-size:clamp(1.7rem,3vw,2.6rem)}h3{font-size:1.25rem}
+  p{color:var(--ink2)}
+  .page{display:none}.page.active{display:block}
+  .container{max-width:1200px;margin:0 auto;padding:0 24px}
+  .section{padding:72px 0}.section-sm{padding:48px 0}
+  @keyframes fadeUp{from{opacity:0;transform:translateY(24px)}to{opacity:1;transform:translateY(0)}}
+  @keyframes fadeIn{from{opacity:0}to{opacity:1}}
+  .fade-up{animation:fadeUp .6s ease both}.fade-up-2{animation:fadeUp .6s .1s ease both}
+  .fade-up-3{animation:fadeUp .6s .2s ease both}.fade-up-4{animation:fadeUp .6s .3s ease both}
+
+  /* HEADER */
+  header{position:sticky;top:0;z-index:100;background:rgba(245,242,236,.93);backdrop-filter:blur(12px);border-bottom:1px solid var(--border)}
+  .header-inner{display:flex;align-items:center;justify-content:space-between;height:64px}
+  .logo{font-family:'Fraunces',serif;font-size:1.35rem;font-weight:800;color:var(--teal);text-decoration:none;letter-spacing:-.04em;cursor:pointer}
+  .logo .logo-sub{font-size:.52rem;letter-spacing:.18em;text-transform:uppercase;color:var(--ink3);display:block;margin-top:-4px;font-family:'DM Sans',sans-serif;font-weight:600}
+  nav{display:flex;gap:4px;align-items:center}
+  .nav-link{padding:7px 13px;border-radius:8px;font-size:13.5px;font-weight:500;color:var(--ink2);text-decoration:none;transition:all .2s;cursor:pointer}
+  .nav-link:hover,.nav-link.active-nav{background:var(--teal-pale);color:var(--teal)}
+  .auth-btns{display:flex;gap:8px}
+  .btn{display:inline-flex;align-items:center;gap:7px;padding:9px 20px;border-radius:10px;font-size:14px;font-weight:500;cursor:pointer;transition:all .2s;text-decoration:none;border:none;font-family:inherit;white-space:nowrap}
+  .btn-ghost{background:transparent;color:var(--ink2);border:1.5px solid var(--border)}
+  .btn-ghost:hover{border-color:var(--teal);color:var(--teal);background:var(--teal-pale)}
+  .btn-primary{background:var(--teal);color:#fff}
+  .btn-primary:hover{background:var(--teal-light);transform:translateY(-1px);box-shadow:0 4px 16px rgba(26,127,116,.3)}
+  .btn-secondary{background:var(--bg2);color:var(--ink);border:1.5px solid var(--border)}
+  .btn-secondary:hover{background:var(--teal-pale);border-color:var(--teal);color:var(--teal)}
+  .btn-danger{background:var(--red-pale);color:var(--red);border:1.5px solid #f5c6c2}
+  .btn-danger:hover{background:var(--red);color:#fff}
+  .btn-map{background:var(--teal-pale);color:var(--teal);border:1.5px solid rgba(26,127,116,.3)}
+  .btn-map:hover{background:var(--teal);color:#fff}
+  .btn-sm{padding:6px 14px;font-size:13px}.btn-lg{padding:13px 28px;font-size:15.5px}
+  .hamburger{display:none;flex-direction:column;gap:5px;cursor:pointer;background:none;border:none;padding:6px}
+  .hamburger span{display:block;width:22px;height:2px;background:var(--ink);border-radius:2px;transition:.3s}
+
+  /* MOBILE NAV */
+  .mobile-nav{display:none;position:fixed;inset:0;z-index:200;background:var(--bg);flex-direction:column;padding:24px;overflow-y:auto}
+  .mobile-nav.open{display:flex;animation:fadeIn .2s ease}
+  .mobile-nav-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:32px}
+  .mobile-nav-links{display:flex;flex-direction:column;gap:6px}
+  .mobile-nav-links .nav-link{font-size:1.05rem;padding:12px 16px}
+
+  /* HERO */
+  .hero{padding:100px 0 80px;background:radial-gradient(ellipse 80% 60% at 50% -10%,rgba(26,127,116,.12) 0%,transparent 70%);position:relative;overflow:hidden}
+  .hero::before{content:'';position:absolute;top:-60px;right:-80px;width:400px;height:400px;border-radius:50%;background:radial-gradient(circle,rgba(26,127,116,.08),transparent 70%);pointer-events:none}
+  .hero-label{display:inline-flex;align-items:center;gap:8px;background:var(--teal-pale);color:var(--teal);padding:6px 14px;border-radius:20px;font-size:13px;font-weight:600;margin-bottom:20px;letter-spacing:.03em;text-transform:uppercase}
+  .hero-title{margin-bottom:18px}.hero-title em{font-style:italic;color:var(--teal)}
+  .hero-desc{font-size:1.1rem;max-width:540px;margin-bottom:32px;color:var(--ink2)}
+  .hero-btns{display:flex;gap:12px;flex-wrap:wrap}
+
+  /* CARDS */
+  .card{background:var(--card);border-radius:var(--radius);border:1px solid var(--border);padding:24px;box-shadow:var(--shadow)}
+  .card-hover{transition:transform .2s,box-shadow .2s}.card-hover:hover{transform:translateY(-3px);box-shadow:var(--shadow-lg)}
+
+  /* STEPS */
+  .steps-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:24px}
+  .step-card{text-align:center;padding:32px 24px}
+  .step-num{width:52px;height:52px;background:var(--teal);color:#fff;border-radius:50%;display:flex;align-items:center;justify-content:center;font-family:'Fraunces',serif;font-size:1.4rem;font-weight:700;margin:0 auto 16px}
+
+  /* SECTION HEADER */
+  .section-header{text-align:center;margin-bottom:48px}
+  .section-header p{max-width:520px;margin:12px auto 0}
+
+  /* FORMS */
+  .form-group{margin-bottom:16px}
+  label{display:block;font-size:13px;font-weight:600;color:var(--ink);margin-bottom:6px;letter-spacing:.02em;text-transform:uppercase}
+  input[type=text],input[type=email],input[type=number],input[type=password],input[type=date],input[type=time],select,textarea{width:100%;padding:10px 14px;border-radius:var(--radius-sm);border:1.5px solid var(--border);background:var(--card);font-family:inherit;font-size:14px;color:var(--ink);transition:border-color .2s,box-shadow .2s;outline:none}
+  input:focus,select:focus,textarea:focus{border-color:var(--teal);box-shadow:0 0 0 3px rgba(26,127,116,.12)}
+  textarea{resize:vertical;min-height:80px}
+  .form-row{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+
+  /* ASSESSMENT */
+  .assessment-grid{display:grid;grid-template-columns:1fr 2fr;gap:24px;align-items:start}
+  .assessment-section{margin-bottom:28px}
+  .assessment-section h3{font-family:'Fraunces',serif;color:var(--ink);margin-bottom:16px;padding-bottom:10px;border-bottom:1px solid var(--border)}
+  .symptom-tag{display:inline-flex;align-items:center;gap:6px;background:var(--teal-pale);border:1px solid rgba(26,127,116,.25);color:var(--teal);border-radius:20px;padding:5px 12px;font-size:13px;margin:4px}
+  .symptom-tag button{background:none;border:none;cursor:pointer;color:var(--teal);font-size:15px;line-height:1;padding:0;margin-left:2px}
+  .symptom-tag button:hover{color:var(--red)}
+  .lab-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+
+  /* BADGES */
+  .badge{display:inline-flex;align-items:center;padding:3px 10px;border-radius:12px;font-size:12px;font-weight:600}
+  .badge-low{background:var(--green-pale);color:var(--green)}
+  .badge-medium{background:var(--amber-pale);color:var(--amber)}
+  .badge-high{background:var(--red-pale);color:var(--red)}
+  .badge-normal{background:var(--green-pale);color:var(--green)}
+  .badge-abnormal{background:var(--red-pale);color:var(--red)}
+  .badge-hospital{background:var(--teal-pale);color:var(--teal)}
+  .badge-lab{background:var(--amber-pale);color:var(--amber)}
+  .badge-emergency{background:var(--red-pale);color:var(--red)}
+
+  /* DISCLAIMER */
+  .disclaimer{background:var(--amber-pale);border:1.5px solid #f5d9a8;border-radius:var(--radius);padding:16px 20px;display:flex;gap:12px;align-items:flex-start;margin-bottom:24px}
+  .disclaimer p{color:var(--amber);font-size:13.5px;font-weight:500;margin:0}
+
+  /* RESULTS */
+  .result-card{margin-bottom:16px}
+  .result-card-header{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:10px}
+  .confidence-bar-wrap{margin:10px 0 6px}
+  .confidence-label{display:flex;justify-content:space-between;font-size:12px;color:var(--ink3);margin-bottom:4px}
+  .confidence-bar{height:6px;background:var(--bg2);border-radius:3px;overflow:hidden}
+  .confidence-fill{height:100%;background:var(--teal);border-radius:3px;transition:width 1s ease}
+
+  /* LAB TABLE */
+  .lab-table{width:100%;border-collapse:collapse}
+  .lab-table th{text-align:left;padding:10px 14px;font-size:12px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;color:var(--ink3);border-bottom:2px solid var(--border)}
+  .lab-table td{padding:12px 14px;font-size:14px;border-bottom:1px solid var(--bg2)}
+  .lab-table tr:hover td{background:var(--bg)}
+
+  /* HOSPITAL CARDS — map-focused */
+  .hosp-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:16px}
+  .hosp-card{padding:0;overflow:hidden}
+  .hosp-card-state{background:var(--teal);color:#fff;font-size:10px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;padding:4px 14px}
+  .hosp-card-body{padding:16px 18px}
+  .hosp-card-name{font-family:'Fraunces',serif;font-size:1.05rem;margin-bottom:4px}
+  .hosp-card-meta{font-size:13px;color:var(--ink3);margin-bottom:10px}
+  .hosp-card-actions{display:flex;gap:8px;flex-wrap:wrap;margin-top:10px}
+  .state-filter-row{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:24px}
+  .state-btn{padding:6px 16px;border-radius:20px;border:1.5px solid var(--border);background:var(--card);font-size:13px;font-weight:500;cursor:pointer;transition:all .18s;color:var(--ink2)}
+  .state-btn:hover,.state-btn.active{background:var(--teal);color:#fff;border-color:var(--teal)}
+
+  /* PROVIDER */
+  .provider-card{display:flex;gap:16px;align-items:flex-start}
+  .provider-avatar{width:56px;height:56px;border-radius:50%;background:var(--teal-pale);display:flex;align-items:center;justify-content:center;font-family:'Fraunces',serif;font-weight:700;font-size:1.3rem;color:var(--teal);flex-shrink:0}
+  .provider-info{flex:1}
+  .provider-info h3{margin-bottom:2px;font-size:1.05rem}
+  .provider-meta{font-size:13px;color:var(--ink3);margin-bottom:8px}
+  .provider-detail{font-size:13.5px;color:var(--ink2);display:flex;align-items:center;gap:6px;margin-bottom:3px}
+  .providers-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+
+  /* RECORDS */
+  .record-item{display:flex;gap:16px;align-items:flex-start;padding:16px 0;border-bottom:1px solid var(--bg2)}
+  .record-icon{width:44px;height:44px;border-radius:10px;background:var(--teal-pale);display:flex;align-items:center;justify-content:center;font-size:1.25rem;flex-shrink:0}
+  .record-info{flex:1}.record-info h4{font-size:14.5px;font-weight:600;margin-bottom:2px}
+  .record-meta{font-size:12.5px;color:var(--ink3)}
+  .record-actions{display:flex;gap:8px;align-items:center;flex-shrink:0}
+
+  /* PDF UPLOAD */
+  .upload-tabs{display:flex;gap:0;margin-bottom:20px;border:1.5px solid var(--border);border-radius:var(--radius-sm);overflow:hidden}
+  .upload-tab{flex:1;padding:10px;text-align:center;font-size:13.5px;font-weight:600;cursor:pointer;background:var(--bg2);color:var(--ink3);transition:all .2s;border:none;font-family:inherit}
+  .upload-tab.active{background:var(--teal);color:#fff}
+  .upload-tab-panel{display:none}.upload-tab-panel.active{display:block}
+  .pdf-drop-zone{border:2px dashed var(--border);border-radius:var(--radius);padding:36px 20px;text-align:center;cursor:pointer;transition:all .2s;background:var(--bg)}
+  .pdf-drop-zone:hover,.pdf-drop-zone.drag-over{border-color:var(--teal);background:var(--teal-pale)}
+  .pdf-drop-zone input[type=file]{display:none}
+  .pdf-preview{display:flex;align-items:center;gap:12px;background:var(--teal-pale);border:1.5px solid rgba(26,127,116,.3);border-radius:var(--radius-sm);padding:12px 16px;margin-top:12px}
+  .pdf-preview-name{flex:1;font-size:13.5px;font-weight:600;color:var(--teal);word-break:break-all}
+  .pdf-preview-remove{background:none;border:none;cursor:pointer;color:var(--red);font-size:1.1rem;padding:2px}
+
+  /* CHART */
+  .chart-area{background:var(--card);border-radius:var(--radius);border:1px solid var(--border);padding:24px}
+  .chart-canvas{width:100%;height:260px;position:relative;overflow:hidden}
+  svg.line-chart{width:100%;height:100%}
+
+  /* TRENDS ENTRY */
+  .trend-entry-panel{background:var(--bg);border:1.5px solid var(--border);border-radius:var(--radius);padding:20px;margin-bottom:24px}
+  .trend-entry-panel h4{font-family:'Fraunces',serif;margin-bottom:14px;font-size:1rem}
+
+  /* REMINDER */
+  .stats-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin-bottom:32px}
+  .stat-card{text-align:center;padding:20px}
+  .stat-num{font-family:'Fraunces',serif;font-size:2.2rem;font-weight:700;color:var(--teal)}
+  .stat-label{font-size:13px;color:var(--ink3);margin-top:4px}
+
+  /* SEARCH */
+  .search-bar{display:flex;gap:12px;margin-bottom:28px;flex-wrap:wrap}
+  .search-input-wrap{flex:1;min-width:220px;position:relative}
+  .search-input-wrap input{padding-left:38px}
+  .search-icon{position:absolute;left:12px;top:50%;transform:translateY(-50%);color:var(--ink3);font-size:15px}
+  .search-bar select{width:200px;flex-shrink:0}
+
+  /* CTA */
+  .cta-section{background:linear-gradient(135deg,var(--teal) 0%,#0d5c54 100%);border-radius:24px;padding:56px 40px;text-align:center;margin:48px 0;position:relative;overflow:hidden}
+  .cta-section::before{content:'';position:absolute;top:-50px;right:-50px;width:250px;height:250px;border-radius:50%;background:rgba(255,255,255,.06)}
+  .cta-section h2{color:#fff}.cta-section p{color:rgba(255,255,255,.75);margin:12px auto 28px;max-width:480px}
+  .btn-white{background:#fff;color:var(--teal);font-weight:600}
+  .btn-white:hover{background:var(--teal-pale);transform:translateY(-1px)}
+
+  /* PROFILE */
+  .profile-avatar{width:80px;height:80px;border-radius:50%;background:linear-gradient(135deg,var(--teal),var(--teal-light));display:flex;align-items:center;justify-content:center;font-family:'Fraunces',serif;font-size:2rem;font-weight:700;color:#fff;margin-bottom:16px}
+  .profile-info-grid{display:grid;grid-template-columns:1fr 1fr}
+  .profile-info-item{padding:14px 20px;border-bottom:1px solid var(--bg2)}
+  .profile-info-item:nth-child(odd){border-right:1px solid var(--bg2)}
+  .profile-info-label{font-size:11px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;color:var(--ink3);margin-bottom:4px}
+  .profile-info-value{font-size:15px;font-weight:500;color:var(--ink)}
+
+  /* ADMIN */
+  .admin-login-wrap{max-width:400px;margin:80px auto}
+  .criteria-tag{display:inline-flex;background:var(--bg2);border-radius:6px;padding:3px 10px;font-size:12px;color:var(--ink2);margin:2px}
+
+  /* INFO CARD */
+  .info-card{background:linear-gradient(135deg,var(--teal-pale),rgba(212,239,236,.4));border:1.5px solid rgba(26,127,116,.2);border-radius:var(--radius);padding:18px 20px;display:flex;gap:12px;margin-bottom:24px}
+  .info-card p{margin:0;font-size:13.5px;color:var(--ink2)}
+
+  /* NEXT STEPS */
+  .next-steps-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:16px}
+  .next-step-card{text-align:center;padding:24px;cursor:pointer}
+  .next-step-card:hover{transform:translateY(-3px);box-shadow:var(--shadow-lg)}
+  .next-step-icon{font-size:2rem;margin-bottom:10px}
+
+  /* SYNC NOTICE */
+  .sync-notice{display:flex;align-items:center;gap:8px;background:var(--teal-pale);border:1px solid rgba(26,127,116,.2);border-radius:8px;padding:8px 14px;font-size:12.5px;color:var(--teal);font-weight:500}
+  .sync-dot{width:7px;height:7px;border-radius:50%;background:var(--teal);animation:blink 2s ease infinite}
+  @keyframes blink{0%,100%{opacity:1}50%{opacity:.3}}
+  @keyframes spin{from{transform:rotate(0deg)}to{transform:rotate(360deg)}}
+
+  /* TOAST */
+  #toast{position:fixed;bottom:28px;right:28px;background:var(--ink);color:#fff;padding:12px 22px;border-radius:12px;font-size:14px;font-weight:500;opacity:0;transition:opacity .3s;z-index:999;pointer-events:none;max-width:320px}
+  #toast.show{opacity:1}
+
+  /* FOOTER */
+  footer{background:var(--ink);color:rgba(255,255,255,.7);padding:60px 0 0;margin-top:80px}
+  .footer-grid{display:grid;grid-template-columns:1.4fr 1fr 1fr 1.2fr;gap:48px;padding-bottom:48px}
+  footer h4{color:#fff;font-family:'Fraunces',serif;margin-bottom:16px;font-size:1rem}
+  footer a,footer .footer-link{color:rgba(255,255,255,.55);text-decoration:none;font-size:14px;display:block;margin-bottom:8px;cursor:pointer;transition:color .2s}
+  footer a:hover,footer .footer-link:hover{color:#2aa89a}
+  .footer-brand{font-family:'Fraunces',serif;font-size:1.7rem;font-weight:800;color:#2aa89a;margin-bottom:4px;letter-spacing:-.04em}
+  .footer-brand-sub{font-size:10px;letter-spacing:.18em;text-transform:uppercase;color:rgba(255,255,255,.3);margin-bottom:10px}
+  .footer-disclaimer{background:rgba(255,255,255,.05);border-radius:8px;padding:14px 16px;font-size:12.5px;margin-top:14px;line-height:1.6}
+  .footer-bottom{border-top:1px solid rgba(255,255,255,.1);padding:20px 0;display:flex;justify-content:space-between;align-items:center}
+  .footer-bottom p{font-size:13px}
+  .footer-bottom-links{display:flex;gap:20px}
+  .footer-bottom-links a{font-size:13px;color:rgba(255,255,255,.4);text-decoration:none}
+  .footer-bottom-links a:hover{color:#2aa89a}
+
+  /* RESPONSIVE */
+  @media(max-width:900px){nav,.auth-btns{display:none}.hamburger{display:flex}.steps-grid,.assessment-grid,.form-row,.next-steps-grid{grid-template-columns:1fr}.stats-grid{grid-template-columns:1fr 1fr}.footer-grid{grid-template-columns:1fr 1fr;gap:32px}.providers-grid,.hosp-grid{grid-template-columns:1fr}.profile-info-grid{grid-template-columns:1fr}.profile-info-item:nth-child(odd){border-right:none}.search-bar select{width:100%}}
+  @media(max-width:600px){.footer-grid{grid-template-columns:1fr}.hero{padding:64px 0 48px}.stats-grid{grid-template-columns:1fr}.lab-grid{grid-template-columns:1fr}.footer-bottom{flex-direction:column;gap:12px;text-align:center}.cta-section{padding:36px 20px}}
+
+  /* ── ADMIN PANEL ── */
+  .adm-nav-btn{display:flex;align-items:center;gap:8px;width:100%;padding:9px 12px;border-radius:8px;cursor:pointer;font-size:13.5px;font-weight:500;color:#9aa0bc;border:none;background:none;font-family:'DM Sans',sans-serif;text-align:left;transition:all .18s}
+  .adm-nav-btn:hover{background:#1e2235;color:#e8eaf2}
+  .adm-nav-btn.active{background:rgba(0,212,170,.12);color:#00d4aa}
+  .adm-count-badge{margin-left:auto;background:#00d4aa;color:#0d1117;font-size:10px;font-weight:800;padding:1px 7px;border-radius:10px}
+  .adm-input{width:100%;padding:10px 13px;background:#141720;border:1.5px solid rgba(255,255,255,.1);border-radius:8px;color:#e8eaf2;font-family:'DM Sans',sans-serif;font-size:13.5px;outline:none;transition:border-color .2s}
+  .adm-input:focus{border-color:#00d4aa}
+  .adm-tbl-td{padding:12px 16px;font-size:13.5px;border-bottom:1px solid rgba(255,255,255,.05);color:#9aa0bc;vertical-align:middle}
+  .adm-badge-risk{display:inline-flex;padding:2px 9px;border-radius:10px;font-size:11px;font-weight:700}
+  .risk-low{background:rgba(61,214,140,.12);color:#3dd68c}
+  .risk-medium{background:rgba(255,179,71,.12);color:#ffb347}
+  .risk-high{background:rgba(255,94,94,.12);color:#ff5e5e}
+  .adm-action-btn{padding:5px 12px;border-radius:6px;font-size:12px;font-weight:600;cursor:pointer;border:none;font-family:'DM Sans',sans-serif;transition:all .15s}
+  .adm-edit-btn{background:rgba(255,179,71,.12);color:#ffb347;border:1px solid rgba(255,179,71,.25)}
+  .adm-edit-btn:hover{background:#ffb347;color:#0d1117}
+  .adm-del-btn{background:rgba(255,94,94,.1);color:#ff5e5e;border:1px solid rgba(255,94,94,.2)}
+  .adm-del-btn:hover{background:#ff5e5e;color:#fff}
+  .adm-chip-sm{display:inline-block;background:rgba(0,212,170,.1);border:1px solid rgba(0,212,170,.2);color:#00d4aa;border-radius:12px;padding:1px 8px;font-size:11px;margin:1px}
+  @media(max-width:768px){#page-admin>div{grid-template-columns:1fr}#page-admin aside{display:none}}
+</style>
+</head>
+<body>
+
+<!-- HEADER -->
+<header>
+  <div class="container header-inner">
+    <div class="logo" onclick="showPage('home')">DIAGNOLYTIX<span class="logo-sub">Health Intelligence Platform</span></div>
+    <nav>
+      <span class="nav-link" onclick="showPage('home')">Home</span>
+      <span class="nav-link" onclick="showPage('hospitals')">Find Hospitals</span>
+      <span class="nav-link" onclick="showPage('records')">Medical Records</span>
+      <span class="nav-link" onclick="showPage('trends')">Health Trends</span>
+      <span class="nav-link" onclick="showPage('reminders')">Reminders</span>
+      <span class="nav-link" onclick="showPage('family')">Family History</span>
+      <span class="nav-link" onclick="showPage('doctors')">Find Doctors</span>
+    </nav>
+    <div class="auth-btns">
+      <div class="sync-notice" id="syncNotice"><span class="sync-dot"></span>Admin Sync Active</div>
+      <span id="adminSessionBadge" style="display:none;background:linear-gradient(135deg,#0d1117,#1a2235);border:1.5px solid rgba(0,212,170,.35);color:#00d4aa;font-size:12px;font-weight:700;padding:5px 14px;border-radius:20px;letter-spacing:.04em;align-items:center;gap:6px;"><span style="width:7px;height:7px;border-radius:50%;background:#00d4aa;display:inline-block;animation:blink 2s ease infinite;margin-right:4px"></span>ADMIN</span>
+      <button class="btn btn-ghost btn-sm" onclick="showPage('profile')" id="profileBtn" style="display:none">&#128100; Profile</button>
+      <button class="btn btn-ghost btn-sm" onclick="doSignOut()" id="signOutBtn" style="display:none">Sign Out</button>
+      <button class="btn btn-ghost btn-sm" style="font-size:12px;border-color:rgba(0,212,170,.4);color:#1a7f74" onclick="openAdminLoginModal()" id="adminLoginBtn">&#128272; Admin</button>
+      <button class="btn btn-ghost btn-sm" onclick="openLoginModal()" id="loginBtn">Patient Login</button>
+    </div>
+    <button class="hamburger" onclick="toggleMobileNav()"><span></span><span></span><span></span></button>
+  </div>
+</header>
+
+<!-- MOBILE NAV -->
+<div class="mobile-nav" id="mobileNav">
+  <div class="mobile-nav-header">
+    <div class="logo">DIAGNOLYTIX<span class="logo-sub">Health Intelligence</span></div>
+    <button class="btn btn-ghost btn-sm" onclick="toggleMobileNav()">✕ Close</button>
+  </div>
+  <div class="mobile-nav-links">
+    <span class="nav-link" onclick="showPage('home');toggleMobileNav()">🏠 Home</span>
+    <span class="nav-link" onclick="showPage('hospitals');toggleMobileNav()">🏥 Find Hospitals</span>
+    <span class="nav-link" onclick="showPage('records');toggleMobileNav()">📁 Medical Records</span>
+    <span class="nav-link" onclick="showPage('trends');toggleMobileNav()">📈 Health Trends</span>
+    <span class="nav-link" onclick="showPage('reminders');toggleMobileNav()">🔔 Reminders</span>
+    <span class="nav-link" onclick="showPage('family');toggleMobileNav()">👨‍👩‍👧 Family History</span>
+    <span class="nav-link" onclick="showPage('doctors');toggleMobileNav()">👨‍⚕️ Find Doctors</span>
+  </div>
+</div>
+
+<!-- ==================== HOME ==================== -->
+<div class="page active" id="page-home">
+  <section class="hero">
+    <div class="container">
+      <div class="hero-label fade-up">🩺 AI Health Navigator</div>
+      <h1 class="hero-title fade-up-2">Your Health, <em>Decoded.</em></h1>
+      <p class="hero-desc fade-up-3">DIAGNOLYTIX helps you understand your symptoms and lab results with clarity, confidence, and care.</p>
+      <div class="hero-btns fade-up-4">
+        <button class="btn btn-primary btn-lg" onclick="document.getElementById('assessment').scrollIntoView({behavior:'smooth'})">▶ Start Assessment</button>
+        <button class="btn btn-secondary btn-lg" onclick="document.getElementById('how-it-works').scrollIntoView({behavior:'smooth'})">How it Works</button>
+      </div>
+    </div>
+  </section>
+  <section class="section" id="how-it-works">
+    <div class="container">
+      <div class="section-header"><h2>Simple Steps to Clarity</h2><p>We've simplified the medical analysis process into three easy steps.</p></div>
+      <div class="steps-grid">
+        <div class="card step-card card-hover fade-up"><div class="step-num">1</div><h3>Share Basics</h3><p>Enter your name, age, and gender to personalise your health assessment experience.</p></div>
+        <div class="card step-card card-hover fade-up-2"><div class="step-num">2</div><h3>Select Symptoms</h3><p>Search and add your symptoms, then rate their severity for a more accurate analysis.</p></div>
+        <div class="card step-card card-hover fade-up-3"><div class="step-num">3</div><h3>Input Lab Data</h3><p>Optionally enter lab values from recent tests. Our system compares them against normal ranges.</p></div>
+      </div>
+    </div>
+  </section>
+  <section class="section-sm" id="assessment">
+    <div class="container">
+      <div class="section-header"><h2>Health Assessment</h2><p>Fill in your details below and get a personalised analysis in seconds.</p></div>
+      <div class="assessment-grid">
+        <div>
+          <div class="card">
+            <div class="assessment-section">
+              <h3>👤 Patient Profile</h3>
+              <div class="form-group"><label>Full Name</label><input type="text" id="patientName" placeholder="Jane Doe"></div>
+              <div class="form-group"><label>Age</label><input type="number" id="patientAge" placeholder="28"></div>
+              <div class="form-group"><label>Gender</label><select id="patientGender"><option>Select gender</option><option>Female</option><option>Male</option><option>Non-binary</option><option>Prefer not to say</option></select></div>
+              <button class="btn btn-primary" style="width:100%" onclick="saveProfile()">💾 Save Profile</button>
+            </div>
+          </div>
+        </div>
+        <div>
+          <div class="card" style="margin-bottom:20px">
+            <div class="assessment-section" style="margin-bottom:0">
+              <h3>🩹 Symptoms</h3>
+              <div style="display:flex;gap:8px;margin-bottom:12px">
+                <select id="symptomSelect" style="flex:1"><option value="">Search & add symptom…</option></select>
+                <button class="btn btn-primary" onclick="addSymptom()">+ Add</button>
+              </div>
+              <div id="symptomsList"><p style="color:var(--ink3);font-size:13.5px">No symptoms added yet.</p></div>
+            </div>
+          </div>
+          <div class="card">
+            <div class="assessment-section" style="margin-bottom:0">
+              <h3>🧪 Lab Values <span style="font-size:12px;font-weight:400;font-family:'DM Sans';color:var(--ink3)">(optional)</span></h3>
+              <div class="lab-grid" id="labInputsGrid"></div>
+              <button class="btn btn-primary btn-lg" style="width:100%;margin-top:8px" onclick="analyzeHealth()">🔬 Analyze Health</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+  <div class="container">
+    <div class="cta-section fade-up">
+      <h2>Ready to understand your health?</h2>
+      <p>Join thousands of users who use DIAGNOLYTIX for quick, reliable, and empathetic health insights.</p>
+      <button class="btn btn-white btn-lg" onclick="document.getElementById('assessment').scrollIntoView({behavior:'smooth'})">📋 Get Your Report Now</button>
+    </div>
+  </div>
+</div>
+
+<!-- ==================== RESULTS ==================== -->
+<div class="page" id="page-results">
+  <section class="section">
+    <div class="container">
+      <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:12px;margin-bottom:24px">
+        <button class="btn btn-ghost btn-sm" onclick="showPage('home')">← Back to Home</button>
+        <button class="btn btn-primary" onclick="downloadHealthReport()" style="gap:8px">⬇ Download Health Report</button>
+      </div>
+      <div class="disclaimer"><span style="font-size:1.3rem;flex-shrink:0">⚠️</span><p><strong>Medical Disclaimer:</strong> This is a preliminary AI-based assessment only. Please consult a qualified healthcare provider for diagnosis and treatment.</p></div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:24px;margin-bottom:24px" id="resultsTop"></div>
+
+      <!-- DOCTOR RECOMMENDATION -->
+      <div id="doctorRecommendationSection" style="margin-bottom:24px"></div>
+
+      <!-- RECOMMENDED TESTS -->
+      <div id="recommendedTestsSection" style="margin-bottom:24px"></div>
+
+      <div class="card" style="margin-bottom:24px">
+        <h3 style="font-family:'Fraunces',serif;margin-bottom:16px">🧪 Lab Values Analysis</h3>
+        <div style="overflow-x:auto"><table class="lab-table"><thead><tr><th>Test</th><th>Your Value</th><th>Normal Range</th><th>Status</th></tr></thead><tbody id="labResultsBody"></tbody></table></div>
+      </div>
+      <h3 style="font-family:'Fraunces',serif;margin-bottom:16px">🗺 Recommended Next Steps</h3>
+      <div class="next-steps-grid">
+        <div class="card next-step-card card-hover" onclick="showPage('doctors')"><div class="next-step-icon">👨‍⚕️</div><h3>Find Doctors</h3><p style="font-size:13px">Connect with specialists relevant to your symptoms.</p></div>
+        <div class="card next-step-card card-hover" onclick="showPage('hospitals')"><div class="next-step-icon">🏥</div><h3>Find Hospitals</h3><p style="font-size:13px">Locate nearby Indian hospitals and diagnostic labs.</p></div>
+        <div class="card next-step-card card-hover" onclick="showPage('tests')"><div class="next-step-icon">🧬</div><h3>Recommended Tests</h3><p style="font-size:13px">See suggested lab tests based on your symptoms.</p></div>
+      </div>
+    </div>
+  </section>
+</div>
+
+<!-- ==================== HOSPITALS ==================== -->
+<div class="page" id="page-hospitals">
+  <section class="hero" style="padding:64px 0 48px">
+    <div class="container">
+      <div class="hero-label">🏥 India Medical Facilities</div>
+      <h1 class="hero-title fade-up">Find Medical <em>Facilities</em></h1>
+      <p class="hero-desc fade-up-2">Real hospitals, diagnostic labs & emergency centres across Kerala, Tamil Nadu, Karnataka, Delhi & Punjab — with direct Google Maps navigation</p>
+    </div>
+  </section>
+  <section class="section-sm">
+    <div class="container">
+      <!-- State filter buttons -->
+      <div class="state-filter-row" id="stateFilterRow">
+        <button class="state-btn active" data-state="" onclick="setStateFilter(this,'')">🇮🇳 All States</button>
+        <button class="state-btn" data-state="Kerala" onclick="setStateFilter(this,'Kerala')">Kerala</button>
+        <button class="state-btn" data-state="Tamil Nadu" onclick="setStateFilter(this,'Tamil Nadu')">Tamil Nadu</button>
+        <button class="state-btn" data-state="Karnataka" onclick="setStateFilter(this,'Karnataka')">Karnataka</button>
+        <button class="state-btn" data-state="Delhi" onclick="setStateFilter(this,'Delhi')">Delhi</button>
+        <button class="state-btn" data-state="Punjab" onclick="setStateFilter(this,'Punjab')">Punjab</button>
+      </div>
+      <div class="search-bar">
+        <div class="search-input-wrap"><span class="search-icon">🔍</span><input type="text" id="hospitalSearch" placeholder="Search hospital or city…" oninput="renderHospitalCards()"></div>
+        <select id="hospitalType" onchange="renderHospitalCards()"><option value="">All Types</option><option>Hospital</option><option>Diagnostic Lab</option><option>Emergency Center</option></select>
+      </div>
+      <div class="hosp-grid" id="hospitalsList"></div>
+    </div>
+  </section>
+</div>
+
+<!-- ==================== MEDICAL RECORDS ==================== -->
+<div class="page" id="page-records">
+  <section class="hero" style="padding:64px 0 48px">
+    <div class="container">
+      <div style="display:flex;justify-content:space-between;align-items:flex-end;flex-wrap:wrap;gap:16px">
+        <div><div class="hero-label">🔒 Secure Storage</div><h1 class="hero-title fade-up">Medical Records <em>Locker</em></h1><p class="hero-desc fade-up-2">Securely store PDFs, images, lab reports, prescriptions, and documents</p></div>
+        <button class="btn btn-primary btn-lg" onclick="toggleRecordForm(true)">+ Upload Record</button>
+      </div>
+    </div>
+  </section>
+  <section class="section-sm">
+    <div class="container">
+      <div class="card" id="recordForm" style="display:none;margin-bottom:24px">
+        <h3 style="font-family:'Fraunces',serif;margin-bottom:18px">📤 Upload New Record</h3>
+        <div class="upload-tabs">
+          <button class="upload-tab active" id="tab-url" onclick="switchUploadTab('url')">🔗 Document URL</button>
+          <button class="upload-tab" id="tab-pdf" onclick="switchUploadTab('pdf')">📄 Upload PDF File</button>
+          <button class="upload-tab" id="tab-img" onclick="switchUploadTab('img')">🖼 Upload Image</button>
+        </div>
+        <div class="form-row">
+          <div class="form-group"><label>Record Name</label><input type="text" id="recName" placeholder="e.g. Blood Test Report"></div>
+          <div class="form-group"><label>Record Type</label><select id="recType"><option>Lab Report</option><option>Prescription</option><option>Scan / Imaging</option><option>Vaccination Record</option><option>Discharge Summary</option><option>Other</option></select></div>
+        </div>
+        <div class="upload-tab-panel active" id="panel-url"><div class="form-group"><label>Document URL</label><input type="text" id="recUrl" placeholder="https://…"></div></div>
+        <div class="upload-tab-panel" id="panel-pdf">
+          <div class="form-group"><label>PDF File</label>
+            <div class="pdf-drop-zone" id="pdfDropZone" onclick="document.getElementById('pdfFileInput').click()" ondragover="handleDragOver(event)" ondrop="handleDrop(event)" ondragleave="handleDragLeave(event)">
+              <input type="file" id="pdfFileInput" accept=".pdf,application/pdf" onchange="handleFileSelect(event)">
+              <div style="font-size:2.2rem;margin-bottom:8px">📂</div>
+              <p><strong>Click to browse</strong> or drag & drop your PDF here</p>
+              <p style="margin-top:6px;font-size:12px">PDF files up to 20MB</p>
+            </div>
+            <div id="pdfPreviewWrap" style="display:none">
+              <div class="pdf-preview"><span style="font-size:1.6rem">📄</span><span class="pdf-preview-name" id="pdfFileName">document.pdf</span><span id="pdfFileSize" style="font-size:12px;color:var(--ink3);flex-shrink:0"></span><button class="pdf-preview-remove" onclick="removePdfFile()">✕</button></div>
+            </div>
+          </div>
+        </div>
+        <div class="upload-tab-panel" id="panel-img">
+          <div class="form-group"><label>Image File</label>
+            <div class="pdf-drop-zone" id="imgDropZone" onclick="document.getElementById('imgFileInput').click()" ondragover="handleImgDragOver(event)" ondrop="handleImgDrop(event)" ondragleave="handleImgDragLeave(event)">
+              <input type="file" id="imgFileInput" accept="image/jpeg,image/png,image/gif,image/webp,image/bmp" onchange="handleImgSelect(event)">
+              <div style="font-size:2.2rem;margin-bottom:8px">🖼</div>
+              <p><strong>Click to browse</strong> or drag & drop your image here</p>
+              <p style="margin-top:6px;font-size:12px">JPG, PNG, GIF, WEBP, BMP — up to 20MB</p>
+            </div>
+            <div id="imgPreviewWrap" style="display:none">
+              <div style="background:var(--teal-pale);border:1.5px solid rgba(26,127,116,.3);border-radius:var(--radius-sm);padding:12px 16px;margin-top:12px">
+                <div style="display:flex;align-items:center;gap:12px;margin-bottom:10px">
+                  <span style="font-size:1.6rem">🖼</span>
+                  <span class="pdf-preview-name" id="imgFileName">image.jpg</span>
+                  <span id="imgFileSize" style="font-size:12px;color:var(--ink3);flex-shrink:0"></span>
+                  <button class="pdf-preview-remove" onclick="removeImgFile()">✕</button>
+                </div>
+                <img id="imgPreviewThumb" src="" alt="Preview" style="max-width:100%;max-height:200px;border-radius:8px;object-fit:contain;display:block">
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="form-group"><label>Notes</label><textarea id="recNotes" placeholder="Any additional notes…"></textarea></div>
+        <div style="display:flex;gap:10px">
+          <button class="btn btn-primary" onclick="saveRecord()">💾 Save Record</button>
+          <button class="btn btn-ghost" onclick="toggleRecordForm(false)">Cancel</button>
+        </div>
+      </div>
+      <div class="card"><div id="recordsList"></div></div>
+    </div>
+  </section>
+</div>
+
+<!-- ==================== HEALTH TRENDS ==================== -->
+<div class="page" id="page-trends">
+  <section class="hero" style="padding:64px 0 48px">
+    <div class="container"><div class="hero-label">📈 Analytics</div><h1 class="hero-title fade-up">Health <em>Trends</em></h1><p class="hero-desc fade-up-2">Log your lab values and visualise your progress against normal reference ranges</p></div>
+  </section>
+  <section class="section-sm">
+    <div class="container">
+      <div style="display:flex;gap:12px;align-items:center;margin-bottom:20px;flex-wrap:wrap">
+        <label style="margin:0;text-transform:none;letter-spacing:0;font-size:14px;font-weight:600">Metric:</label>
+        <select id="trendMetric" onchange="renderChart()" style="width:240px">
+          <option value="glucose">Blood Glucose (mg/dL)</option>
+          <option value="hgb">Hemoglobin (g/dL)</option>
+          <option value="cholesterol">Cholesterol (mg/dL)</option>
+          <option value="wbc">WBC (×10³/µL)</option>
+          <option value="tsh">TSH (mIU/L)</option>
+          <option value="crp">CRP (mg/L)</option>
+        </select>
+      </div>
+      <div class="stats-grid" style="margin-bottom:24px">
+        <div class="card stat-card"><div class="stat-num" id="statLatest">—</div><div class="stat-label" id="statLatestLabel">Latest Reading</div></div>
+        <div class="card stat-card"><div class="stat-num" id="statAvg">—</div><div class="stat-label">Average (all entries)</div></div>
+        <div class="card stat-card"><div class="stat-num" id="statCount">0</div><div class="stat-label">Total Entries</div></div>
+      </div>
+      <div class="card trend-entry-panel" style="margin-bottom:24px">
+        <h4>➕ Log a New Lab Reading</h4>
+        <div style="display:flex;gap:12px;align-items:flex-end;flex-wrap:wrap">
+          <div class="form-group" style="margin:0;flex:1;min-width:140px"><label id="entryValueLabel">Value (mg/dL)</label><input type="number" id="entryValue" placeholder="e.g. 98" step="0.1"></div>
+          <div class="form-group" style="margin:0;flex:1;min-width:140px"><label>Date</label><input type="date" id="entryDate"></div>
+          <div class="form-group" style="margin:0;flex:1;min-width:140px"><label>Note <span style="font-weight:400;text-transform:none;letter-spacing:0;font-size:11px;color:var(--ink3)">(optional)</span></label><input type="text" id="entryNote" placeholder="e.g. Fasting…"></div>
+          <button class="btn btn-primary" onclick="addTrendEntry()">+ Add Entry</button>
+        </div>
+        <div id="entryLog" style="margin-top:16px"></div>
+      </div>
+      <div class="chart-area">
+        <div style="display:flex;justify-content:space-between;align-items:flex-start;flex-wrap:wrap;gap:10px;margin-bottom:14px">
+          <h3 style="font-family:'Fraunces',serif" id="chartTitle">Blood Glucose Over Time</h3>
+          <div style="display:flex;gap:16px;align-items:center;flex-wrap:wrap">
+            <div style="display:flex;align-items:center;gap:6px;font-size:13px;color:var(--ink2)"><div style="width:24px;height:3px;background:var(--teal);border-radius:2px"></div><span>Your values</span></div>
+            <div style="display:flex;align-items:center;gap:6px;font-size:13px;color:var(--ink2)"><div style="width:24px;height:10px;background:rgba(26,127,116,.12);border:1px dashed rgba(26,127,116,.4);border-radius:2px"></div><span>Normal range</span></div>
+          </div>
+        </div>
+        <div class="chart-canvas"><svg class="line-chart" id="trendChart" viewBox="0 0 800 240" preserveAspectRatio="none"></svg></div>
+        <div id="chartLabels" style="display:flex;justify-content:space-between;padding:4px 48px 0;font-size:11.5px;color:var(--ink3)"></div>
+      </div>
+    </div>
+  </section>
+</div>
+
+<!-- ==================== REMINDERS ==================== -->
+<div class="page" id="page-reminders">
+  <section class="hero" style="padding:64px 0 48px">
+    <div class="container">
+      <div style="display:flex;justify-content:space-between;align-items:flex-end;flex-wrap:wrap;gap:16px">
+        <div><div class="hero-label">🔔 Notifications</div><h1 class="hero-title fade-up">Health <em>Reminders</em></h1><p class="hero-desc fade-up-2">Never miss a medicine dose or lab test appointment</p></div>
+        <button class="btn btn-primary btn-lg" onclick="toggleReminderForm(true)">+ Add Reminder</button>
+      </div>
+    </div>
+  </section>
+  <section class="section-sm">
+    <div class="container">
+      <div class="card" id="reminderForm" style="display:none;margin-bottom:24px">
+        <h3 style="font-family:'Fraunces',serif;margin-bottom:18px">🔔 New Reminder</h3>
+        <div class="form-row">
+          <div class="form-group"><label>Title</label><input type="text" id="remTitle" placeholder="e.g. Take Metformin"></div>
+          <div class="form-group"><label>Type</label><select id="remType"><option>Medicine</option><option>Lab Test</option><option>Doctor Visit</option><option>Other</option></select></div>
+        </div>
+        <div class="form-row">
+          <div class="form-group"><label>Due Date</label><input type="date" id="remDate"></div>
+          <div class="form-group"><label>Due Time</label><input type="time" id="remTime"></div>
+        </div>
+        <div class="form-group"><label>Notes</label><textarea id="remNotes" placeholder="Additional instructions…"></textarea></div>
+        <div style="display:flex;gap:10px">
+          <button class="btn btn-primary" onclick="saveReminder()">✅ Create Reminder</button>
+          <button class="btn btn-ghost" onclick="toggleReminderForm(false)">Cancel</button>
+        </div>
+      </div>
+      <div class="card" id="remindersList"></div>
+    </div>
+  </section>
+</div>
+
+<!-- ==================== FAMILY HISTORY ==================== -->
+<div class="page" id="page-family">
+  <section class="hero" style="padding:64px 0 48px">
+    <div class="container">
+      <div style="display:flex;justify-content:space-between;align-items:flex-end;flex-wrap:wrap;gap:16px">
+        <div><div class="hero-label">👨‍👩‍👧 Genetics</div><h1 class="hero-title fade-up">Family Medical <em>History</em></h1><p class="hero-desc fade-up-2">Track hereditary conditions and family health patterns</p></div>
+        <button class="btn btn-primary btn-lg" onclick="toggleFHForm(true)">+ Add Record</button>
+      </div>
+    </div>
+  </section>
+  <section class="section-sm">
+    <div class="container">
+      <div class="info-card"><span style="font-size:1.3rem;flex-shrink:0">💡</span><p><strong>Why track family history?</strong> Certain conditions like diabetes, heart disease, and cancer have hereditary components. Knowing your family history helps doctors assess your risk and recommend preventive measures.</p></div>
+      <div class="card" id="fhForm" style="display:none;margin-bottom:24px">
+        <h3 style="font-family:'Fraunces',serif;margin-bottom:18px">➕ Add Family History Record</h3>
+        <div class="form-row">
+          <div class="form-group"><label>Condition Name</label><input type="text" id="fhCondition" placeholder="e.g. Type 2 Diabetes"></div>
+          <div class="form-group"><label>Relationship</label><select id="fhRelation"><option>Mother</option><option>Father</option><option>Sibling</option><option>Grandparent</option><option>Uncle/Aunt</option><option>Other</option></select></div>
+        </div>
+        <div class="form-row">
+          <div class="form-group"><label>Diagnosis Year</label><input type="number" id="fhYear" placeholder="e.g. 2010"></div>
+          <div class="form-group"><label>Hereditary?</label><select id="fhHereditary"><option value="yes">Yes</option><option value="no">No</option><option value="unknown">Unknown</option></select></div>
+        </div>
+        <div class="form-group"><label>Impact</label><input type="text" id="fhImpact" placeholder="e.g. Managed with medication"></div>
+        <div class="form-group"><label>Notes</label><textarea id="fhNotes" placeholder="Additional context…"></textarea></div>
+        <div style="display:flex;gap:10px"><button class="btn btn-primary" onclick="saveFH()">💾 Save Record</button><button class="btn btn-ghost" onclick="toggleFHForm(false)">Cancel</button></div>
+      </div>
+      <div id="fhList" class="card" style="padding:0"></div>
+    </div>
+  </section>
+</div>
+
+<!-- ==================== DOCTORS ==================== -->
+<div class="page" id="page-doctors">
+  <section class="hero" style="padding:64px 0 48px">
+    <div class="container"><div class="hero-label">👨‍⚕️ Healthcare Professionals</div><h1 class="hero-title fade-up">Find <em>Doctors</em></h1><p class="hero-desc fade-up-2">Connect with qualified healthcare professionals based on your needs</p></div>
+  </section>
+  <section class="section-sm">
+    <div class="container">
+      <div class="search-bar">
+        <div class="search-input-wrap"><span class="search-icon">🔍</span><input type="text" id="doctorSearch" placeholder="Search by name, specialty, or clinic…" oninput="filterDoctors()"></div>
+        <select id="doctorSpecialty" onchange="filterDoctors()"><option value="">All Specialties</option><option>General Physician</option><option>Cardiologist</option><option>Endocrinologist</option><option>Neurologist</option><option>Dermatologist</option><option>Pulmonologist</option><option>Gastroenterologist</option><option>Orthopedic</option></select>
+      </div>
+      <div class="providers-grid" id="doctorsList"></div>
+    </div>
+  </section>
+</div>
+
+<!-- ==================== TESTS ==================== -->
+<div class="page" id="page-tests">
+  <section class="hero" style="padding:64px 0 48px">
+    <div class="container"><div class="hero-label">🧬 Laboratory</div><h1 class="hero-title fade-up">Recommended <em>Lab Tests</em></h1><p class="hero-desc fade-up-2">Based on your symptoms, these lab tests may provide valuable insights</p></div>
+  </section>
+  <section class="section-sm">
+    <div class="container">
+      <div class="info-card"><span style="font-size:1.3rem;flex-shrink:0">ℹ️</span><p>These are AI-suggested tests. Always consult with a healthcare professional before ordering any tests.</p></div>
+      <div class="card" style="overflow:auto"><table class="lab-table"><thead><tr><th>Test Name</th><th>Unit</th><th>Normal Low</th><th>Normal High</th><th>Category</th></tr></thead><tbody id="labTestsBody"></tbody></table></div>
+    </div>
+  </section>
+</div>
+
+<!-- ==================== PROFILE ==================== -->
+<div class="page" id="page-profile">
+  <section class="hero" style="padding:64px 0 48px"><div class="container"><div class="hero-label">👤 Account</div><h1 class="hero-title fade-up">My <em>Profile</em></h1><p class="hero-desc fade-up-2">Manage your account information and preferences</p></div></section>
+  <section class="section-sm">
+    <div class="container" style="max-width:640px">
+      <div class="card" style="text-align:center;padding:32px;margin-bottom:20px">
+        <div class="profile-avatar" style="margin:0 auto" id="profileAvatarDisp">J</div>
+        <h2 id="profileNameDisp" style="margin-bottom:4px">Jane Doe</h2>
+        <p id="profileEmailDisp"><a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="2050415449454e5460444941474e4f4c595449580e434f4d">[email&#160;protected]</a></p>
+      </div>
+      <div class="card" style="margin-bottom:20px">
+        <h3 style="font-family:'Fraunces',serif;padding:16px 20px;border-bottom:1px solid var(--bg2)">Account Information</h3>
+        <div class="profile-info-grid">
+          <div class="profile-info-item"><div class="profile-info-label">Full Name</div><div class="profile-info-value" id="piName">—</div></div>
+          <div class="profile-info-item"><div class="profile-info-label">Age</div><div class="profile-info-value" id="piAge">—</div></div>
+          <div class="profile-info-item"><div class="profile-info-label">Gender</div><div class="profile-info-value" id="piGender">—</div></div>
+          <div class="profile-info-item"><div class="profile-info-label">Member Since</div><div class="profile-info-value">March 2025</div></div>
+          <div class="profile-info-item"><div class="profile-info-label">Status</div><div class="profile-info-value"><span class="badge badge-normal">✓ Active</span></div></div>
+          <div class="profile-info-item"><div class="profile-info-label">Platform</div><div class="profile-info-value">DIAGNOLYTIX</div></div>
+        </div>
+      </div>
+      <div class="card"><h3 style="font-family:'Fraunces',serif;margin-bottom:14px">Account Actions</h3><button class="btn btn-danger" onclick="doSignOut()">🚪 Sign Out</button></div>
+    </div>
+  </section>
+</div>
+
+<!-- LOGIN MODAL -->
+<div id="loginModalOverlay" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.45);z-index:300;align-items:center;justify-content:center" onclick="closeLoginModal(event)">
+  <div class="card" style="width:380px;padding:36px" onclick="event.stopPropagation()">
+    <div style="text-align:center;margin-bottom:24px"><div style="font-size:2rem;margin-bottom:8px">👤</div><h2 style="font-size:1.5rem">Patient Login</h2><p>Sign in to DIAGNOLYTIX</p></div>
+    <div class="form-group"><label>Email</label><input type="email" id="loginEmail" placeholder="you@example.com"></div>
+    <div class="form-group"><label>Password</label><input type="password" id="loginPw" placeholder="••••••••"></div>
+    <button class="btn btn-primary" style="width:100%;margin-bottom:10px" onclick="patientLogin()">Sign In</button>
+    <button class="btn btn-ghost" style="width:100%" onclick="closeLoginModal()">Cancel</button>
+    <p style="font-size:12px;color:var(--ink3);text-align:center;margin-top:10px">Demo: any email / any password</p>
+  </div>
+</div>
+
+
+<!-- ==================== ADMIN LOGIN MODAL ==================== -->
+<div id="adminLoginOverlay" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.65);z-index:400;align-items:center;justify-content:center" onclick="closeAdminModal(event)">
+  <div style="background:#0d1117;border:1.5px solid rgba(0,212,170,.3);border-radius:18px;width:400px;padding:36px;box-shadow:0 32px 80px rgba(0,0,0,.8)" onclick="event.stopPropagation()">
+    <div style="text-align:center;margin-bottom:24px">
+      <div style="width:56px;height:56px;border-radius:50%;background:rgba(0,212,170,.1);border:2px solid rgba(0,212,170,.3);display:flex;align-items:center;justify-content:center;font-size:1.5rem;margin:0 auto 14px">&#128272;</div>
+      <h2 style="font-family:'Fraunces',serif;font-size:1.5rem;color:#e8eaf2;margin-bottom:6px">Admin Login</h2>
+      <p style="font-size:13.5px;color:#9aa0bc">DIAGNOLYTIX Control Panel</p>
+    </div>
+    <div id="adminLoginErr" style="display:none;background:rgba(255,94,94,.1);border:1px solid rgba(255,94,94,.3);border-radius:8px;padding:10px 14px;font-size:13px;color:#ff5e5e;margin-bottom:16px">&#9888; Invalid credentials. Please try again.</div>
+    <div style="margin-bottom:14px">
+      <label style="display:block;font-size:11px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:#5a607a;margin-bottom:6px">Username</label>
+      <input type="text" id="adminUser" placeholder="admin" onkeydown="if(event.key==='Enter')doAdminLogin()" class="adm-input">
+    </div>
+    <div style="margin-bottom:20px">
+      <label style="display:block;font-size:11px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:#5a607a;margin-bottom:6px">Password</label>
+      <input type="password" id="adminPw" placeholder="&#8226;&#8226;&#8226;&#8226;&#8226;&#8226;&#8226;&#8226;" onkeydown="if(event.key==='Enter')doAdminLogin()" class="adm-input">
+    </div>
+    <button onclick="doAdminLogin()" style="width:100%;padding:12px;background:#00d4aa;color:#0d1117;font-weight:700;font-size:15px;border:none;border-radius:10px;cursor:pointer;font-family:'DM Sans',sans-serif;margin-bottom:10px">Sign In to Admin</button>
+    <button onclick="closeAdminModal()" style="width:100%;padding:10px;background:rgba(255,255,255,.05);color:#9aa0bc;font-size:14px;border:1px solid rgba(255,255,255,.08);border-radius:10px;cursor:pointer;font-family:'DM Sans',sans-serif">Cancel</button>
+    <p style="text-align:center;font-size:12px;color:#5a607a;margin-top:16px">Demo: <strong style="color:#9aa0bc">admin</strong> / <strong style="color:#9aa0bc">admin123</strong></p>
+  </div>
+</div>
+
+<!-- ==================== ADMIN PANEL PAGE ==================== -->
+<div class="page" id="page-admin" style="background:#0d0f14;min-height:100vh">
+  <div style="display:grid;grid-template-columns:230px 1fr;min-height:calc(100vh - 64px)">
+    <aside style="background:#141720;border-right:1px solid rgba(255,255,255,.07);padding:24px 12px;display:flex;flex-direction:column;gap:2px">
+      <div style="padding:8px 10px 18px;border-bottom:1px solid rgba(255,255,255,.07);margin-bottom:8px">
+        <div style="font-family:'Fraunces',serif;font-size:1rem;font-weight:800;color:#00d4aa;letter-spacing:-.03em">DIAGNOLYTIX</div>
+        <div style="font-size:10px;letter-spacing:.12em;text-transform:uppercase;color:#5a607a;margin-top:2px">Control Panel</div>
+        <div style="display:flex;align-items:center;gap:6px;font-size:11px;color:#3dd68c;margin-top:10px"><span style="width:7px;height:7px;border-radius:50%;background:#3dd68c;display:inline-block;animation:blink 2s infinite"></span>Live &#8212; edits reflect instantly</div>
+      </div>
+      <span style="font-size:10px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:#5a607a;padding:10px 10px 4px">Manage</span>
+      <button class="adm-nav-btn active" id="navBtn-diseases" onclick="showAdminTab('diseases')">&#129754; <span>Diseases</span> <span class="adm-count-badge" id="cnt-diseases">0</span></button>
+      <button class="adm-nav-btn" id="navBtn-symptoms" onclick="showAdminTab('symptoms')">&#129657; <span>Symptoms</span> <span class="adm-count-badge" id="cnt-symptoms">0</span></button>
+      <div style="margin-top:auto;padding-top:16px;border-top:1px solid rgba(255,255,255,.07)">
+        <button class="adm-nav-btn" style="color:#ff5e5e" onclick="doSignOut()">&#128682; <span>Exit Admin</span></button>
+        <button class="adm-nav-btn" style="margin-top:4px" onclick="showPage('home')">&#8599; <span>View Patient Site</span></button>
+      </div>
+    </aside>
+    <main style="padding:32px 36px;overflow-y:auto">
+
+      <!-- DISEASES TAB -->
+      <div id="adminTab-diseases">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:28px">
+          <div>
+            <h2 style="font-family:'Fraunces',serif;color:#e8eaf2;font-size:1.8rem;margin-bottom:4px">&#129754; Disease Database</h2>
+            <p style="color:#9aa0bc;font-size:13.5px">Add or edit diseases &#8212; changes appear live in patient Health Assessment</p>
+          </div>
+          <button onclick="toggleDiseaseForm()" style="background:#00d4aa;color:#0d1117;font-weight:700;padding:10px 20px;border:none;border-radius:10px;cursor:pointer;font-family:'DM Sans',sans-serif;font-size:14px">+ Add Disease</button>
+        </div>
+        <div id="diseaseFormWrap" style="display:none;background:#1e2235;border:1.5px solid rgba(255,255,255,.1);border-radius:14px;padding:24px;margin-bottom:24px">
+          <h3 style="font-family:'Fraunces',serif;color:#e8eaf2;margin-bottom:18px" id="diseaseFormTitle">&#10133; Add New Disease</h3>
+          <input type="hidden" id="editDiseaseId">
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px">
+            <div><label style="display:block;font-size:11px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:#5a607a;margin-bottom:5px">Disease Name *</label><input type="text" id="dName" placeholder="e.g. Type 2 Diabetes" class="adm-input"></div>
+            <div><label style="display:block;font-size:11px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:#5a607a;margin-bottom:5px">Risk Level *</label><select id="dRisk" class="adm-input"><option value="low">Low</option><option value="medium">Medium</option><option value="high">High</option></select></div>
+            <div style="grid-column:1/-1"><label style="display:block;font-size:11px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:#5a607a;margin-bottom:5px">Short Description</label><input type="text" id="dDesc" placeholder="One-line patient-facing description" class="adm-input"></div>
+            <div style="grid-column:1/-1"><label style="display:block;font-size:11px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:#5a607a;margin-bottom:5px">Explanation (shown after analysis)</label><textarea id="dExpl" placeholder="Detailed explanation shown to the patient..." class="adm-input" style="min-height:72px;resize:vertical"></textarea></div>
+            <div style="grid-column:1/-1"><label style="display:block;font-size:11px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:#5a607a;margin-bottom:5px">Associated Symptoms (comma-separated)</label><input type="text" id="dCriteria" placeholder="e.g. Fatigue, Increased thirst, High glucose" class="adm-input">
+              <div style="display:flex;align-items:center;gap:6px;font-size:12px;color:#3dd68c;margin-top:6px"><span style="width:6px;height:6px;border-radius:50%;background:#3dd68c;flex-shrink:0;animation:blink 2s ease infinite"></span>Any <strong>new</strong> symptoms listed here will be <strong>automatically added</strong> to the Symptom Index and patient picker when you save.</div>
+            </div>
+            <!-- AI GENERATE SECTION -->
+            <div style="grid-column:1/-1;margin-top:4px">
+              <div style="background:rgba(0,212,170,.06);border:1.5px solid rgba(0,212,170,.2);border-radius:12px;padding:18px 20px">
+                <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px;margin-bottom:14px">
+                  <div>
+                    <div style="font-size:13px;font-weight:700;color:#00d4aa;margin-bottom:3px">✨ AI-Powered Recommended Actions</div>
+                    <div style="font-size:12px;color:#5a607a">Auto-generate doctor specialty &amp; lab tests using AI. Fill in disease name &amp; symptoms first.</div>
+                  </div>
+                  <button onclick="generateAIRecommendations()" id="aiGenBtn" style="background:linear-gradient(135deg,#00d4aa,#0097a7);color:#0d1117;font-weight:700;padding:9px 18px;border:none;border-radius:8px;cursor:pointer;font-family:'DM Sans',sans-serif;font-size:13px;display:flex;align-items:center;gap:7px;white-space:nowrap">
+                    <span id="aiGenBtnIcon">⚡</span> Generate with AI
+                  </button>
+                </div>
+                <!-- AI output area -->
+                <div id="aiGenStatus" style="display:none;font-size:13px;color:#9aa0bc;margin-bottom:12px;align-items:center;gap:8px">
+                  <span id="aiGenStatusDot" style="width:8px;height:8px;border-radius:50%;background:#00d4aa;animation:blink 1s ease infinite;flex-shrink:0"></span>
+                  <span id="aiGenStatusText">Researching disease data...</span>
+                </div>
+                <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px">
+                  <div>
+                    <label style="display:block;font-size:11px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:#5a607a;margin-bottom:5px">Doctor Specialty</label>
+                    <input type="text" id="dDoctorSpecialty" placeholder="e.g. Endocrinologist" class="adm-input">
+                    <label style="display:block;font-size:11px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:#5a607a;margin-bottom:5px;margin-top:10px">Why This Doctor</label>
+                    <input type="text" id="dDoctorReason" placeholder="e.g. Specialises in hormonal disorders" class="adm-input">
+                  </div>
+                  <div>
+                    <label style="display:block;font-size:11px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:#5a607a;margin-bottom:5px">Recommended Lab Tests</label>
+                    <textarea id="dTests" placeholder="One per line:&#10;Blood Glucose | Measures fasting sugar&#10;HbA1c | 3-month sugar average" class="adm-input" style="min-height:108px;resize:vertical;font-size:12.5px"></textarea>
+                    <div style="font-size:11px;color:#5a607a;margin-top:4px">Format: <strong style="color:#9aa0bc">Test Name | Why it's needed</strong> (one per line)</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div style="display:flex;gap:10px;margin-top:18px">
+            <button onclick="saveDisease()" style="background:#00d4aa;color:#0d1117;font-weight:700;padding:10px 22px;border:none;border-radius:8px;cursor:pointer;font-family:'DM Sans',sans-serif">&#128190; Save Disease</button>
+            <button onclick="toggleDiseaseForm(false)" style="background:rgba(255,255,255,.06);color:#9aa0bc;padding:10px 18px;border:1px solid rgba(255,255,255,.1);border-radius:8px;cursor:pointer;font-family:'DM Sans',sans-serif">Cancel</button>
+          </div>
+        </div>
+        <div style="background:#1e2235;border:1px solid rgba(255,255,255,.07);border-radius:14px;overflow:hidden">
+          <div style="padding:16px 20px;border-bottom:1px solid rgba(255,255,255,.07);display:flex;gap:12px;align-items:center;flex-wrap:wrap">
+            <input type="text" id="disSearch" placeholder="&#128269; Search diseases..." oninput="renderAdminDiseases()" style="flex:1;min-width:180px;background:#141720;border:1.5px solid rgba(255,255,255,.08);border-radius:8px;padding:8px 12px;color:#e8eaf2;font-family:'DM Sans',sans-serif;font-size:13px;outline:none">
+            <select id="disRiskFilter" onchange="renderAdminDiseases()" style="background:#141720;border:1.5px solid rgba(255,255,255,.08);border-radius:8px;padding:8px 12px;color:#9aa0bc;font-family:'DM Sans',sans-serif;font-size:13px;outline:none">
+              <option value="">All Risk</option><option value="low">Low</option><option value="medium">Medium</option><option value="high">High</option>
+            </select>
+          </div>
+          <div style="overflow-x:auto"><table style="width:100%;border-collapse:collapse">
+            <thead><tr>
+              <th style="text-align:left;padding:10px 16px;font-size:11px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:#5a607a;border-bottom:1px solid rgba(255,255,255,.07)">Name</th>
+              <th style="text-align:left;padding:10px 16px;font-size:11px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:#5a607a;border-bottom:1px solid rgba(255,255,255,.07)">Risk</th>
+              <th style="text-align:left;padding:10px 16px;font-size:11px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:#5a607a;border-bottom:1px solid rgba(255,255,255,.07)">Criteria</th>
+              <th style="text-align:left;padding:10px 16px;font-size:11px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:#5a607a;border-bottom:1px solid rgba(255,255,255,.07)">Doctor / Tests</th>
+              <th style="text-align:left;padding:10px 16px;font-size:11px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:#5a607a;border-bottom:1px solid rgba(255,255,255,.07)">Actions</th>
+            </tr></thead>
+            <tbody id="diseasesTbody"></tbody>
+          </table></div>
+        </div>
+      </div>
+
+      <!-- SYMPTOMS TAB -->
+      <div id="adminTab-symptoms" style="display:none">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:28px">
+          <div>
+            <h2 style="font-family:'Fraunces',serif;color:#e8eaf2;font-size:1.8rem;margin-bottom:4px">&#129657; Symptom Index</h2>
+            <p style="color:#9aa0bc;font-size:13.5px">Every symptom added here appears <strong style="color:#00d4aa">live</strong> in the patient symptom picker</p>
+          </div>
+          <button onclick="toggleSymptomForm()" style="background:#00d4aa;color:#0d1117;font-weight:700;padding:10px 20px;border:none;border-radius:10px;cursor:pointer;font-family:'DM Sans',sans-serif;font-size:14px">+ Add Symptom</button>
+        </div>
+        <!-- Live sync notice -->
+        <div style="background:rgba(0,212,170,.06);border:1px solid rgba(0,212,170,.2);border-radius:10px;padding:12px 18px;margin-bottom:20px;display:flex;align-items:center;gap:10px;font-size:13.5px;color:#9aa0bc">
+          <span style="width:8px;height:8px;border-radius:50%;background:#00d4aa;flex-shrink:0;animation:blink 2s ease infinite"></span>
+          <span>Symptoms saved here are <strong style="color:#e8eaf2">instantly available</strong> to patients in the Health Assessment symptom picker &#8212; no refresh needed. Symptoms from disease criteria are <strong style="color:#00d4aa">auto-added here</strong> when you save a disease.</span>
+        </div>
+        <div id="symptomFormWrap" style="display:none;background:#1e2235;border:1.5px solid rgba(255,255,255,.1);border-radius:14px;padding:24px;margin-bottom:24px">
+          <h3 style="font-family:'Fraunces',serif;color:#e8eaf2;margin-bottom:18px" id="symptomFormTitle">&#10133; Add New Symptom</h3>
+          <input type="hidden" id="editSymptomId">
+          <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:14px">
+            <div style="grid-column:1/3"><label style="display:block;font-size:11px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:#5a607a;margin-bottom:5px">Symptom Name *</label><input type="text" id="sName" placeholder="e.g. Migraine, Chest tightness..." class="adm-input"></div>
+            <div><label style="display:block;font-size:11px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:#5a607a;margin-bottom:5px">Category</label><select id="sCat" class="adm-input"><option>General</option><option>Neurological</option><option>Respiratory</option><option>Cardiac</option><option>Gastrointestinal</option><option>Musculoskeletal</option><option>Dermatological</option><option>Metabolic</option><option>Urological</option><option>Ophthalmological</option><option>ENT</option></select></div>
+            <div><label style="display:block;font-size:11px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:#5a607a;margin-bottom:5px">Default Severity</label><select id="sSev" class="adm-input"><option value="mild">Mild</option><option value="moderate">Moderate</option><option value="severe">Severe</option></select></div>
+          </div>
+          <div style="display:flex;gap:10px;margin-top:18px">
+            <button onclick="saveSymptom()" style="background:#00d4aa;color:#0d1117;font-weight:700;padding:10px 22px;border:none;border-radius:8px;cursor:pointer;font-family:'DM Sans',sans-serif">&#128190; Save Symptom</button>
+            <button onclick="toggleSymptomForm(false)" style="background:rgba(255,255,255,.06);color:#9aa0bc;padding:10px 18px;border:1px solid rgba(255,255,255,.1);border-radius:8px;cursor:pointer;font-family:'DM Sans',sans-serif">Cancel</button>
+          </div>
+        </div>
+        <div style="background:#1e2235;border:1px solid rgba(255,255,255,.07);border-radius:14px;overflow:hidden">
+          <div style="padding:16px 20px;border-bottom:1px solid rgba(255,255,255,.07);display:flex;gap:12px;align-items:center;flex-wrap:wrap">
+            <input type="text" id="symSearch" placeholder="&#128269; Search symptoms..." oninput="renderAdminSymptoms()" style="flex:1;min-width:180px;background:#141720;border:1.5px solid rgba(255,255,255,.08);border-radius:8px;padding:8px 12px;color:#e8eaf2;font-family:'DM Sans',sans-serif;font-size:13px;outline:none">
+            <select id="symCatFilter" onchange="renderAdminSymptoms()" style="background:#141720;border:1.5px solid rgba(255,255,255,.08);border-radius:8px;padding:8px 12px;color:#9aa0bc;font-family:'DM Sans',sans-serif;font-size:13px;outline:none">
+              <option value="">All Categories</option>
+<option>General</option>
+<option>Neurological</option>
+<option>Respiratory</option>
+<option>Cardiac</option>
+<option>Gastrointestinal</option>
+<option>Musculoskeletal</option>
+<option>Dermatological</option>
+<option>Metabolic</option>
+<option>Urological</option>
+<option>Ophthalmological</option>
+<option>ENT</option>
+
+<option>Endocrine</option>
+<option>Hematological</option>
+<option>Immunological</option>
+<option>Infectious Diseases</option>
+<option>Oncological</option>
+<option>Pediatric</option>
+<option>Geriatric</option>
+<option>Psychiatric</option>
+<option>Reproductive</option>
+<option>Gynecological</option>
+<option>Andrological</option>
+<option>Dental</option>
+<option>Hepatic</option>
+<option>Pancreatic</option>
+<option>Vascular</option>
+<option>Autoimmune</option>
+<option>Nutritional</option>
+<option>Genetic</option>
+<option>Toxicological</option>
+<option>Sleep Disorders</option>
+<option>Allergic</option>
+
+            </select>
+          </div>
+          <div style="overflow-x:auto"><table style="width:100%;border-collapse:collapse">
+            <thead><tr>
+              <th style="text-align:left;padding:10px 16px;font-size:11px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:#5a607a;border-bottom:1px solid rgba(255,255,255,.07)">Symptom</th>
+              <th style="text-align:left;padding:10px 16px;font-size:11px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:#5a607a;border-bottom:1px solid rgba(255,255,255,.07)">Category</th>
+              <th style="text-align:left;padding:10px 16px;font-size:11px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:#5a607a;border-bottom:1px solid rgba(255,255,255,.07)">Default Severity</th>
+              <th style="text-align:left;padding:10px 16px;font-size:11px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:#5a607a;border-bottom:1px solid rgba(255,255,255,.07)">Actions</th>
+            </tr></thead>
+            <tbody id="symptomsTbody"></tbody>
+          </table></div>
+        </div>
+      </div>
+
+    </main>
+  </div>
+</div>
+
+<div id="toast"></div>
+
+<!-- FOOTER -->
+<footer>
+  <div class="container">
+    <div class="footer-grid">
+      <div>
+        <div class="footer-brand">DIAGNOLYTIX</div>
+        <div class="footer-brand-sub">Health Intelligence Platform</div>
+        <p style="font-size:14px;color:rgba(255,255,255,.55);margin-bottom:12px">Your trusted companion for understanding your health data with clarity and empathy.</p>
+        <div class="footer-disclaimer"><strong style="color:rgba(255,255,255,.8)">⚠️ Important Notice:</strong> DIAGNOLYTIX is not a substitute for professional medical advice, diagnosis, or treatment.</div>
+      </div>
+      <div>
+        <h4>Quick Links</h4>
+        <span class="footer-link" onclick="showPage('home')">Home</span>
+        <span class="footer-link" onclick="showPage('hospitals')">Find Hospitals</span>
+        <span class="footer-link" onclick="showPage('doctors')">Find Doctors</span>
+        <span class="footer-link" onclick="showPage('records')">Medical Records</span>
+        <span class="footer-link" onclick="showPage('trends')">Health Trends</span>
+        <span class="footer-link" onclick="showPage('tests')">Lab Tests</span>
+      </div>
+      <div>
+        <h4>Contact</h4>
+        <p style="font-size:14px;color:rgba(255,255,255,.55);margin-bottom:6px">📧 <a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="285b5d5858475a5c684c41494f464744515c4150064b4745">[email&#160;protected]</a></p>
+        <p style="font-size:14px;color:rgba(255,255,255,.55);margin-bottom:6px">📞 +91 98765 43210</p>
+        <p style="font-size:14px;color:rgba(255,255,255,.55)">📍 123 Health Avenue, Kochi, Kerala</p>
+      </div>
+      <div>
+        <h4>Legal</h4>
+        <a href="#">Privacy Policy</a><a href="#">Terms of Use</a><a href="#">Medical Disclaimer</a><a href="#">Cookie Policy</a>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <p>© 2025 DIAGNOLYTIX. All rights reserved.</p>
+      <div class="footer-bottom-links"><a href="#">Privacy</a><a href="#">Terms</a><a href="#">Disclaimer</a></div>
+    </div>
+  </div>
+</footer>
+
+<!-- ==================== EMBEDDED BaseCrudService ==================== -->
+<script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script>
+const BaseCrudService = (() => {
+  const PREFIX = 'dnx_';
+  const DEFAULTS = {
+    diseases:[
+      {id:1,name:'Type 2 Diabetes',risk:'high',desc:'Chronic condition affecting blood-sugar regulation.',expl:'Occurs when your body doesn\'t use insulin properly. Manageable with diet, exercise, and medication.',criteria:['Fatigue','Increased thirst','High glucose','Frequent urination'],doctor:{specialty:'Endocrinologist',reason:'Specialises in diabetes, insulin resistance and hormonal disorders.'},tests:[{name:'Fasting Blood Glucose',why:'Measures baseline blood sugar levels'},{name:'HbA1c',why:'Reflects average blood sugar over the past 3 months'},{name:'Urine Glucose & Albumin',why:'Checks kidney impact of elevated sugar'},{name:'Lipid Profile',why:'Diabetes increases cardiovascular risk'},{name:'Creatinine / eGFR',why:'Assesses kidney function'}]},
+      {id:2,name:'Anemia',risk:'medium',desc:'Red blood cells or haemoglobin below normal levels.',expl:'Reduces oxygen-carrying capacity, causing fatigue and weakness. Iron deficiency is the most common cause.',criteria:['Fatigue','Low haemoglobin','Pale skin','Dizziness'],doctor:{specialty:'Haematologist',reason:'Specialises in blood disorders and abnormal blood counts.'},tests:[{name:'Complete Blood Count (CBC)',why:'Confirms low haemoglobin and RBC levels'},{name:'Serum Iron & Ferritin',why:'Checks iron stores in the body'},{name:'TIBC',why:'Total iron-binding capacity reveals iron deficiency'},{name:'Vitamin B12 & Folate',why:'Deficiency causes megaloblastic anemia'},{name:'Peripheral Blood Smear',why:'Identifies RBC morphology abnormalities'}]},
+      {id:3,name:'Hypothyroidism',risk:'low',desc:'Underactive thyroid gland producing insufficient hormones.',expl:'Slows metabolism. Treatment involves hormone-replacement therapy.',criteria:['Fatigue','Weight gain','Cold sensitivity','High TSH'],doctor:{specialty:'Endocrinologist',reason:'Manages thyroid hormone disorders and metabolic conditions.'},tests:[{name:'TSH (Thyroid Stimulating Hormone)',why:'Primary screening test for thyroid dysfunction'},{name:'Free T3 & Free T4',why:'Measures actual thyroid hormone levels'},{name:'Anti-TPO Antibodies',why:'Identifies autoimmune thyroiditis (Hashimoto\'s)'},{name:'Lipid Profile',why:'Hypothyroidism raises cholesterol levels'},{name:'CBC',why:'Anemia is common with thyroid disorders'}]},
+      {id:4,name:'Hypertension',risk:'high',desc:'Persistently elevated blood pressure.',expl:'Increases risk of heart disease and stroke. Lifestyle changes and medication can manage this effectively.',criteria:['Headache','Chest pain','Dizziness','Shortness of breath'],doctor:{specialty:'Cardiologist',reason:'Specialises in heart and blood vessel conditions, including high blood pressure.'},tests:[{name:'Blood Pressure Monitoring (24-hr)',why:'Confirms sustained hypertension pattern'},{name:'ECG',why:'Checks for cardiac effects of high BP'},{name:'Echocardiogram',why:'Assesses heart wall thickness and function'},{name:'Urine Albumin',why:'Detects kidney damage from hypertension'},{name:'Lipid Profile + Glucose',why:'Evaluates overall cardiovascular risk'}]},
+      {id:5,name:'COVID-19',risk:'high',desc:'Respiratory illness caused by SARS-CoV-2.',expl:'Can range from mild to severe pneumonia. Vaccination, rest, and monitoring oxygen levels are key.',criteria:['Fever','Cough','Fatigue','Shortness of breath','Loss of smell'],doctor:{specialty:'Pulmonologist / General Physician',reason:'Manages respiratory infections and post-COVID complications.'},tests:[{name:'RT-PCR / Antigen Test',why:'Confirms active COVID-19 infection'},{name:'CBC with Differential',why:'Identifies lymphopenia typical in COVID'},{name:'CRP & Ferritin',why:'Markers of inflammatory response severity'},{name:'D-Dimer',why:'Screens for clotting complications'},{name:'Chest X-Ray / CT Thorax',why:'Visualises lung involvement and severity'}]},
+      {id:6,name:'Dengue Fever',risk:'high',desc:'Mosquito-borne viral infection common in tropical regions.',expl:'Causes high fever, severe joint pain, and low platelet count. Hydration and close monitoring are critical.',criteria:['Fever','Joint pain','Skin rash','Fatigue','Nausea'],doctor:{specialty:'Infectious Disease Specialist / General Physician',reason:'Manages vector-borne infections and monitors platelet trends.'},tests:[{name:'NS1 Antigen Test',why:'Detects dengue virus in early days of fever'},{name:'Dengue IgM & IgG Antibodies',why:'Confirms dengue infection after day 5'},{name:'Platelet Count (serial)',why:'Falling platelets indicate disease progression'},{name:'CBC with Differential',why:'Monitors leucopenia and haematocrit changes'},{name:'LFT (Liver Function Tests)',why:'Dengue can cause hepatitis-like liver involvement'}]},
+      {id:7,name:'Vitamin D Deficiency',risk:'low',desc:'Insufficient vitamin D affecting bone and immune health.',expl:'Very common in India. Causes bone pain, muscle weakness, and low immunity. Sunlight and supplements are key.',criteria:['Fatigue','Back pain','Bone pain','Muscle weakness'],doctor:{specialty:'General Physician / Orthopedician',reason:'Manages nutritional deficiencies and bone health.'},tests:[{name:'25-OH Vitamin D (Serum)',why:'Gold standard test to measure Vitamin D levels'},{name:'Serum Calcium & Phosphorus',why:'Vitamin D regulates calcium and phosphate metabolism'},{name:'PTH (Parathyroid Hormone)',why:'Elevated PTH compensates for low Vitamin D'},{name:'ALP (Alkaline Phosphatase)',why:'Raised in bone mineralisation disorders'},{name:'CBC',why:'Rules out coexisting anemia causing fatigue'}]},
+    ],
+    symptoms:[
+      {id:1,name:'Headache',category:'Neurological',severity_default:'moderate'},
+      {id:2,name:'Fever',category:'General',severity_default:'moderate'},
+      {id:3,name:'Fatigue',category:'General',severity_default:'mild'},
+      {id:4,name:'Cough',category:'Respiratory',severity_default:'mild'},
+      {id:5,name:'Shortness of breath',category:'Respiratory',severity_default:'severe'},
+      {id:6,name:'Chest pain',category:'Cardiac',severity_default:'severe'},
+      {id:7,name:'Nausea',category:'Gastrointestinal',severity_default:'mild'},
+      {id:8,name:'Dizziness',category:'Neurological',severity_default:'moderate'},
+      {id:9,name:'Joint pain',category:'Musculoskeletal',severity_default:'moderate'},
+      {id:10,name:'Skin rash',category:'Dermatological',severity_default:'mild'},
+      {id:11,name:'Weight loss',category:'General',severity_default:'moderate'},
+      {id:12,name:'Night sweats',category:'General',severity_default:'mild'},
+      {id:13,name:'Abdominal pain',category:'Gastrointestinal',severity_default:'moderate'},
+      {id:14,name:'Back pain',category:'Musculoskeletal',severity_default:'moderate'},
+      {id:15,name:'Blurred vision',category:'Ophthalmological',severity_default:'moderate'},
+      {id:16,name:'Loss of smell',category:'ENT',severity_default:'mild'},
+      {id:17,name:'Bone pain',category:'Musculoskeletal',severity_default:'moderate'},
+      {id:18,name:'Muscle weakness',category:'Musculoskeletal',severity_default:'mild'},
+      {id:19,name:'Increased thirst',category:'Metabolic',severity_default:'moderate'},
+      {id:20,name:'Frequent urination',category:'Urological',severity_default:'moderate'},
+    ],
+    labtests:[
+      {id:1,name:'Hemoglobin',unit:'g/dL',low:12,high:17.5,category:'CBC'},
+      {id:2,name:'WBC',unit:'×10³/µL',low:4.5,high:11,category:'CBC'},
+      {id:3,name:'Platelets',unit:'×10³/µL',low:150,high:400,category:'CBC'},
+      {id:4,name:'Blood Glucose',unit:'mg/dL',low:70,high:100,category:'Metabolic'},
+      {id:5,name:'HbA1c',unit:'%',low:0,high:5.7,category:'Metabolic'},
+      {id:6,name:'Creatinine',unit:'mg/dL',low:0.6,high:1.2,category:'Metabolic'},
+      {id:7,name:'Cholesterol',unit:'mg/dL',low:0,high:200,category:'Lipid'},
+      {id:8,name:'LDL',unit:'mg/dL',low:0,high:100,category:'Lipid'},
+      {id:9,name:'HDL',unit:'mg/dL',low:40,high:999,category:'Lipid'},
+      {id:10,name:'TSH',unit:'mIU/L',low:0.4,high:4.0,category:'Thyroid'},
+      {id:11,name:'T3 Free',unit:'pg/mL',low:2.3,high:4.2,category:'Thyroid'},
+      {id:12,name:'T4 Free',unit:'ng/dL',low:0.8,high:1.8,category:'Thyroid'},
+      {id:13,name:'CRP',unit:'mg/L',low:0,high:10,category:'Inflammation'},
+      {id:14,name:'ESR',unit:'mm/hr',low:0,high:20,category:'Inflammation'},
+    ],
+    hospitals:[
+      {id:1,name:'AIIMS Thiruvananthapuram',type:'Hospital',state:'Kerala',city:'Thiruvananthapuram',phone:'+91-471-252-4400',emergency:true,lat:8.5241,lng:76.9366},
+      {id:2,name:'Amrita Institute of Medical Sciences',type:'Hospital',state:'Kerala',city:'Kochi',phone:'+91-484-280-1234',emergency:true,lat:9.9312,lng:76.2673},
+      {id:3,name:'Lakeshore Hospital',type:'Hospital',state:'Kerala',city:'Kochi',phone:'+91-484-270-1032',emergency:true,lat:10.0261,lng:76.3084},
+      {id:4,name:'Malabar Institute of Medical Sciences',type:'Hospital',state:'Kerala',city:'Kozhikode',phone:'+91-495-271-5050',emergency:true,lat:11.2588,lng:75.7804},
+      {id:5,name:'SUT Hospital',type:'Hospital',state:'Kerala',city:'Thiruvananthapuram',phone:'+91-471-272-5111',emergency:true,lat:8.4875,lng:76.9525},
+      {id:6,name:'Thyrocare Diagnostics – Kochi',type:'Diagnostic Lab',state:'Kerala',city:'Kochi',phone:'+91-484-285-0000',emergency:false,lat:9.9816,lng:76.2999},
+      {id:7,name:'Kerala Emergency Care Centre',type:'Emergency Center',state:'Kerala',city:'Thiruvananthapuram',phone:'+91-471-272-0400',emergency:true,lat:8.5064,lng:76.9566},
+      {id:8,name:'AIIMS Madurai',type:'Hospital',state:'Tamil Nadu',city:'Madurai',phone:'+91-452-252-4905',emergency:true,lat:9.9252,lng:78.1198},
+      {id:9,name:'Apollo Hospitals Chennai',type:'Hospital',state:'Tamil Nadu',city:'Chennai',phone:'+91-44-2829-6900',emergency:true,lat:13.0604,lng:80.2496},
+      {id:10,name:'Fortis Malar Hospital',type:'Hospital',state:'Tamil Nadu',city:'Chennai',phone:'+91-44-4289-2222',emergency:true,lat:12.9900,lng:80.2582},
+      {id:11,name:'Dr Lal PathLabs – Chennai',type:'Diagnostic Lab',state:'Tamil Nadu',city:'Chennai',phone:'+91-44-4060-3456',emergency:false,lat:13.0499,lng:80.2125},
+      {id:12,name:'MIOT International Hospital',type:'Hospital',state:'Tamil Nadu',city:'Chennai',phone:'+91-44-4200-2288',emergency:true,lat:13.0114,lng:80.1859},
+      {id:13,name:'Sri Ramachandra Medical Centre',type:'Hospital',state:'Tamil Nadu',city:'Chennai',phone:'+91-44-4592-8600',emergency:true,lat:13.0354,lng:80.1559},
+      {id:14,name:'Manipal Hospital Bangalore',type:'Hospital',state:'Karnataka',city:'Bengaluru',phone:'+91-80-2502-4444',emergency:true,lat:12.9527,lng:77.5956},
+      {id:15,name:'NIMHANS',type:'Hospital',state:'Karnataka',city:'Bengaluru',phone:'+91-80-2699-5000',emergency:true,lat:12.9388,lng:77.5958},
+      {id:16,name:'Narayana Health City',type:'Hospital',state:'Karnataka',city:'Bengaluru',phone:'+91-80-7122-2222',emergency:true,lat:12.8399,lng:77.6633},
+      {id:17,name:'Kidwai Memorial Oncology',type:'Hospital',state:'Karnataka',city:'Bengaluru',phone:'+91-80-2656-5636',emergency:false,lat:12.9354,lng:77.5951},
+      {id:18,name:'SRL Diagnostics – Bengaluru',type:'Diagnostic Lab',state:'Karnataka',city:'Bengaluru',phone:'+91-80-4648-5100',emergency:false,lat:12.9716,lng:77.5946},
+      {id:19,name:'Bowring & Lady Curzon Hospital',type:'Emergency Center',state:'Karnataka',city:'Bengaluru',phone:'+91-80-2558-2938',emergency:true,lat:12.9833,lng:77.6101},
+      {id:20,name:'AIIMS New Delhi',type:'Hospital',state:'Delhi',city:'New Delhi',phone:'+91-11-2658-8500',emergency:true,lat:28.5672,lng:77.2100},
+      {id:21,name:'Safdarjung Hospital',type:'Hospital',state:'Delhi',city:'New Delhi',phone:'+91-11-2673-0000',emergency:true,lat:28.5694,lng:77.2079},
+      {id:22,name:'Max Super Speciality Hospital',type:'Hospital',state:'Delhi',city:'Saket',phone:'+91-11-2651-5050',emergency:true,lat:28.5275,lng:77.2113},
+      {id:23,name:'Fortis Hospital Delhi',type:'Hospital',state:'Delhi',city:'Vasant Kunj',phone:'+91-11-4277-6222',emergency:true,lat:28.5198,lng:77.1590},
+      {id:24,name:'Thyrocare – Rohini Delhi',type:'Diagnostic Lab',state:'Delhi',city:'Rohini',phone:'+91-11-4567-8900',emergency:false,lat:28.7196,lng:77.1202},
+      {id:25,name:'Delhi Emergency 108 Centre',type:'Emergency Center',state:'Delhi',city:'New Delhi',phone:'108',emergency:true,lat:28.6139,lng:77.2090},
+      {id:26,name:'PGI Chandigarh',type:'Hospital',state:'Punjab',city:'Chandigarh',phone:'+91-172-274-6018',emergency:true,lat:30.7648,lng:76.7869},
+      {id:27,name:'Fortis Hospital Mohali',type:'Hospital',state:'Punjab',city:'Mohali',phone:'+91-172-669-2222',emergency:true,lat:30.7046,lng:76.7179},
+      {id:28,name:'Dayanand Medical College Ludhiana',type:'Hospital',state:'Punjab',city:'Ludhiana',phone:'+91-161-230-1028',emergency:true,lat:30.9010,lng:75.8573},
+      {id:29,name:'SRL Diagnostics – Chandigarh',type:'Diagnostic Lab',state:'Punjab',city:'Chandigarh',phone:'+91-172-501-8100',emergency:false,lat:30.7333,lng:76.7794},
+      {id:30,name:'GMCH Emergency Chandigarh',type:'Emergency Center',state:'Punjab',city:'Chandigarh',phone:'+91-172-266-5253',emergency:true,lat:30.7210,lng:76.7793},
+    ],
+    doctors:[
+      {id:1,name:'Dr. Sarah Chen',specialty:'Cardiologist',quals:'MD, FACC',clinic:'Heart Care Center',addr:'12 Heart St, Medical District',phone:'+1 555-0201',initials:'SC'},
+      {id:2,name:'Dr. Arjun Patel',specialty:'Endocrinologist',quals:'MD, PhD',clinic:'Diabetes & Hormone Clinic',addr:'34 Hormone Ave',phone:'+1 555-0202',initials:'AP'},
+      {id:3,name:'Dr. Emily Rodriguez',specialty:'General Physician',quals:'MD, MBBS',clinic:'Family Health Clinic',addr:'56 Wellness Blvd',phone:'+1 555-0203',initials:'ER'},
+      {id:4,name:'Dr. James Okafor',specialty:'Neurologist',quals:'MD, DM Neurology',clinic:'Neuro Care Institute',addr:'78 Brain Road',phone:'+1 555-0204',initials:'JO'},
+      {id:5,name:'Dr. Lisa Nakamura',specialty:'Dermatologist',quals:'MD, FAAD',clinic:'Skin & Hair Clinic',addr:'90 Skin Care Lane',phone:'+1 555-0205',initials:'LN'},
+      {id:6,name:'Dr. David Kim',specialty:'Pulmonologist',quals:'MD, FCCP',clinic:'Breath Easy Center',addr:'101 Lung Ave',phone:'+1 555-0206',initials:'DK'},
+    ],
+  };
+  // Smart merge: adds/updates entries from DEFAULTS without deleting user-added data
+  function _mergeDefaults(col){
+    const stored=JSON.parse(localStorage.getItem(PREFIX+col)||'[]');
+    const defaults=DEFAULTS[col]||[];
+    // Personal collections (reminders, records, family, etc.) — never touch, skip merge
+    const MERGE_COLS=['diseases','symptoms','labtests','hospitals','doctors'];
+    if(!MERGE_COLS.includes(col)){if(!stored.length){localStorage.setItem(PREFIX+col,JSON.stringify(defaults));}return;}
+    // Build map of existing stored items by id
+    const map={};stored.forEach(i=>{map[i.id]=i;});
+    // For each default item: add if missing, update if name/key fields changed
+    defaults.forEach(def=>{
+      if(!map[def.id]){map[def.id]=def;}// new item — add it
+      else{map[def.id]={...def,...map[def.id],id:def.id};}// existing — keep user edits but patch in new fields
+    });
+    // Preserve user-created items (id not in defaults)
+    const defaultIds=new Set(defaults.map(d=>d.id));
+    stored.forEach(i=>{if(!defaultIds.has(i.id))map[i.id]=i;});
+    // Sort by id and save
+    const merged=Object.values(map).sort((a,b)=>a.id-b.id);
+    localStorage.setItem(PREFIX+col,JSON.stringify(merged));
+  }
+  function _init(){Object.keys(DEFAULTS).forEach(col=>{_mergeDefaults(col);});}
+  function getAll(col){_init();try{return JSON.parse(localStorage.getItem(PREFIX+col))||[];}catch{return[]}}
+  function save(col,items){localStorage.setItem(PREFIX+col,JSON.stringify(items));localStorage.setItem(PREFIX+'lastUpdate',JSON.stringify({collection:col,ts:Date.now()}))}
+  function create(col,data){const items=getAll(col);const id=items.length?Math.max(...items.map(i=>i.id))+1:1;const item={...data,id};items.push(item);save(col,items);return item}
+  function update(col,id,data){const items=getAll(col);const idx=items.findIndex(i=>i.id===id);if(idx===-1)return null;items[idx]={...items[idx],...data,id};save(col,items);return items[idx]}
+  function remove(col,id){save(col,getAll(col).filter(i=>i.id!==id))}
+  return{getAll,create,update,remove};
+})();
+</script>
+
+<!-- ==================== APP LOGIC ==================== -->
+<script>
+// ─ STATE ─
+const userSymptoms=[];const records=[];const reminders=[];const familyHistory=[];
+let patientProfile={name:'',age:'',gender:''};let isLoggedIn=false;
+let selectedPdfFile=null;let selectedImgFile=null;let currentUploadTab='url';
+let activeStateFilter='';
+
+// ─ LAB ENTRY DATA ─
+const trendDataStore={
+  glucose:{label:'Blood Glucose',unit:'mg/dL',color:'#1a7f74',normal:[70,100],entries:[{date:'2024-06-15',value:92,note:''},{date:'2024-09-14',value:102,note:'Post-meal'},{date:'2024-12-05',value:95,note:''},{date:'2025-03-01',value:98,note:''}]},
+  hgb:{label:'Hemoglobin',unit:'g/dL',color:'#c97b2a',normal:[12,17.5],entries:[{date:'2024-06-15',value:13.8,note:''},{date:'2024-12-05',value:14.2,note:''},{date:'2025-03-01',value:14.0,note:''}]},
+  cholesterol:{label:'Cholesterol',unit:'mg/dL',color:'#2563eb',normal:[0,200],entries:[{date:'2024-06-15',value:195,note:''},{date:'2024-12-05',value:182,note:''},{date:'2025-03-01',value:185,note:''}]},
+  wbc:{label:'WBC',unit:'×10³/µL',color:'#7c3aed',normal:[4.5,11],entries:[{date:'2024-09-14',value:7.8,note:''},{date:'2025-03-01',value:7.1,note:''}]},
+  tsh:{label:'TSH',unit:'mIU/L',color:'#db2777',normal:[0.4,4.0],entries:[{date:'2024-09-14',value:2.1,note:''},{date:'2025-03-01',value:1.9,note:''}]},
+  crp:{label:'CRP',unit:'mg/L',color:'#ea580c',normal:[0,10],entries:[{date:'2024-09-14',value:4.2,note:''},{date:'2025-03-01',value:3.1,note:''}]},
+};
+
+// ─ NAV ─
+function showPage(id){
+  document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
+  const pg=document.getElementById('page-'+id);
+  if(pg){pg.classList.add('active');window.scrollTo({top:0,behavior:'smooth'});}
+  updateNavActive(id);
+  if(id==='hospitals'){renderHospitalCards();}
+  if(id==='doctors'){renderDoctors();}
+  if(id==='records'){renderRecords();}
+  if(id==='reminders'){renderReminders();}
+  if(id==='family'){renderFH();}
+  if(id==='trends'){setTimeout(()=>{renderChart();renderEntryLog();},80);}
+  if(id==='profile'){updateProfileDisplay();}
+  if(id==='tests'){renderLabTestsTable();}
+  if(id==='home'){buildSymptomSelect();buildLabInputs();}
+}
+function updateNavActive(id){
+  document.querySelectorAll('.nav-link').forEach(l=>l.classList.remove('active-nav'));
+  const map={home:'Home',hospitals:'Find Hospitals',records:'Medical Records',trends:'Health Trends',reminders:'Reminders',family:'Family History',doctors:'Find Doctors'};
+  if(map[id])document.querySelectorAll('.nav-link').forEach(l=>{if(l.textContent.trim()===map[id])l.classList.add('active-nav');});
+}
+function toggleMobileNav(){document.getElementById('mobileNav').classList.toggle('open');}
+
+// ─ AUTH ─
+function openLoginModal(){document.getElementById('loginModalOverlay').style.display='flex';}
+function closeLoginModal(e){if(!e||e.target===document.getElementById('loginModalOverlay'))document.getElementById('loginModalOverlay').style.display='none';}
+function patientLogin(){isLoggedIn=true;document.getElementById('loginBtn').style.display='none';document.getElementById('profileBtn').style.display='flex';document.getElementById('signOutBtn').style.display='flex';closeLoginModal();toast('✅ Welcome to DIAGNOLYTIX!');}
+function doSignOut(){isLoggedIn=false;document.getElementById('loginBtn').style.display='flex';document.getElementById('profileBtn').style.display='none';document.getElementById('signOutBtn').style.display='none';showPage('home');toast('👋 Signed out.');}
+function saveProfile(){patientProfile.name=document.getElementById('patientName').value||'Patient';patientProfile.age=document.getElementById('patientAge').value;patientProfile.gender=document.getElementById('patientGender').value;toast('✅ Profile saved!');}
+function updateProfileDisplay(){const n=patientProfile.name||'Jane Doe';document.getElementById('profileNameDisp').textContent=n;document.getElementById('profileAvatarDisp').textContent=n[0].toUpperCase();document.getElementById('piName').textContent=n;document.getElementById('piAge').textContent=patientProfile.age||'—';document.getElementById('piGender').textContent=patientProfile.gender||'—';}
+
+// ─ BUILD DYNAMIC INPUTS FROM BaseCrudService ─
+function buildSymptomSelect(){
+  const symptoms=BaseCrudService.getAll('symptoms');
+  const sel=document.getElementById('symptomSelect');
+  sel.innerHTML='<option value="">Search & add symptom…</option>'+symptoms.map(s=>`<option value="${s.name}">${s.name}</option>`).join('');
+}
+function buildLabInputs(){
+  const labs=BaseCrudService.getAll('labtests');
+  document.getElementById('labInputsGrid').innerHTML=labs.map(l=>`
+    <div class="form-group"><label>${l.name} (${l.unit})</label><input type="number" id="lab_${l.id}" placeholder="${l.low}–${l.high}" step="0.01"></div>`).join('');
+}
+function renderLabTestsTable(){
+  const labs=BaseCrudService.getAll('labtests');
+  document.getElementById('labTestsBody').innerHTML=labs.map(l=>`
+    <tr><td><strong>${l.name}</strong></td><td style="font-family:monospace;font-size:13px;color:var(--teal)">${l.unit}</td><td>${l.low}</td><td>${l.high===999?'—':l.high}</td><td><span class="badge" style="background:var(--bg2);color:var(--ink3)">${l.category||'—'}</span></td></tr>`).join('');
+}
+
+// ─ SYMPTOMS ─
+function addSymptom(){
+  const sel=document.getElementById('symptomSelect');
+  const val=sel.value;
+  if(!val)return;
+  if(userSymptoms.find(s=>s.name===val)){toast('Already added.');return;}
+  userSymptoms.push({name:val,severity:'moderate'});
+  sel.value='';
+  renderUserSymptoms();
+  renderLiveDiseaseMatches();
+}
+function removeSymptom(i){
+  userSymptoms.splice(i,1);
+  renderUserSymptoms();
+  renderLiveDiseaseMatches();
+}
+
+// ── LIVE DISEASE MATCH PANEL ──
+function renderLiveDiseaseMatches(){
+  const panel=document.getElementById('liveDiseasePanel');
+  if(!panel)return;
+  if(!userSymptoms.length){panel.innerHTML='';panel.style.display='none';return;}
+  const diseases=BaseCrudService.getAll('diseases');
+  const symptomNames=userSymptoms.map(s=>s.name.toLowerCase());
+  const scored=diseases.map(d=>{
+    const matches=(d.criteria||[]).filter(c=>symptomNames.some(s=>s.includes(c.toLowerCase())||c.toLowerCase().includes(s)));
+    return{...d,matchCount:matches.length,matchedSymptoms:matches};
+  }).filter(d=>d.matchCount>0).sort((a,b)=>b.matchCount-a.matchCount);
+  if(!scored.length){panel.innerHTML='<p style="color:var(--ink3);font-size:13px;padding:10px 0">No matching conditions yet — add more symptoms.</p>';panel.style.display='block';return;}
+  const riskColor={low:'var(--green)',medium:'var(--amber)',high:'var(--red)'};
+  const riskBg={low:'var(--green-pale)',medium:'var(--amber-pale)',high:'var(--red-pale)'};
+  panel.style.display='block';
+  panel.innerHTML=`
+    <div style="display:flex;align-items:center;gap:8px;margin-bottom:10px">
+      <span style="font-size:1rem">🔍</span>
+      <h4 style="font-family:'Fraunces',serif;font-size:1rem;color:var(--ink);margin:0">Possible Conditions Detected</h4>
+      <span style="margin-left:auto;font-size:12px;color:var(--ink3)">${userSymptoms.length} symptom${userSymptoms.length>1?'s':''} entered</span>
+    </div>
+    ${scored.map(d=>{
+      const pct=Math.min(100,Math.round((d.matchCount/Math.max(1,(d.criteria||[]).length))*100));
+      return`<div style="background:var(--bg);border:1.5px solid var(--border);border-radius:10px;padding:12px 14px;margin-bottom:8px;cursor:pointer;transition:all .18s"
+        onmouseenter="this.style.borderColor='var(--teal)';this.style.background='var(--teal-pale)'"
+        onmouseleave="this.style.borderColor='var(--border)';this.style.background='var(--bg)'"
+        onclick="analyzeHealth()">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:5px">
+          <strong style="font-size:14px;color:var(--ink)">${d.name}</strong>
+          <span style="background:${riskBg[d.risk]};color:${riskColor[d.risk]};font-size:11px;font-weight:700;padding:2px 9px;border-radius:10px">${d.risk.toUpperCase()}</span>
+        </div>
+        <div style="height:5px;background:var(--border);border-radius:3px;margin-bottom:6px;overflow:hidden">
+          <div style="height:100%;width:${pct}%;background:${riskColor[d.risk]};border-radius:3px;transition:width .6s ease"></div>
+        </div>
+        <div style="font-size:12px;color:var(--ink3);margin-bottom:5px">${d.matchCount} of ${(d.criteria||[]).length} criteria matched · <span style="color:var(--teal);font-weight:600">Click to run full analysis →</span></div>
+        <div style="display:flex;flex-wrap:wrap;gap:3px">${d.matchedSymptoms.map(m=>`<span style="background:rgba(26,127,116,.12);color:var(--teal);border-radius:10px;padding:1px 8px;font-size:11px;font-weight:600">✓ ${m}</span>`).join('')}</div>
+      </div>`;
+    }).join('')}
+    <button class="btn btn-primary" style="width:100%;margin-top:2px" onclick="analyzeHealth()">🔬 Run Full Analysis</button>`;
+}
+
+function renderUserSymptoms(){
+  const el=document.getElementById('symptomsList');
+  if(!userSymptoms.length){el.innerHTML='<p style="color:var(--ink3);font-size:13.5px">No symptoms added yet.</p>';return;}
+  el.innerHTML=userSymptoms.map((s,i)=>`
+    <div style="display:flex;align-items:center;gap:8px;margin-bottom:6px;flex-wrap:wrap">
+      <span class="symptom-tag">${s.name}<button onclick="removeSymptom(${i})">✕</button></span>
+      <select style="width:130px;font-size:12px;padding:4px 8px" onchange="userSymptoms[${i}].severity=this.value">
+        <option value="mild" ${s.severity==='mild'?'selected':''}>Mild</option>
+        <option value="moderate" ${s.severity==='moderate'?'selected':''}>Moderate</option>
+        <option value="severe" ${s.severity==='severe'?'selected':''}>Severe</option>
+      </select>
+    </div>`).join('');
+}
+
+// ─ ANALYSIS ─
+let lastAnalysisResult = null;
+function analyzeHealth(){
+  if(!userSymptoms.length){toast('⚠️ Please add at least one symptom.');return;}
+  const diseases=BaseCrudService.getAll('diseases');
+  const labs=BaseCrudService.getAll('labtests');
+  const symptomNames=userSymptoms.map(s=>s.name);
+  const matched=diseases.filter(d=>d.criteria.some(c=>symptomNames.some(s=>s.toLowerCase().includes(c.toLowerCase())||c.toLowerCase().includes(s.toLowerCase()))));
+  const predictions=matched.length?matched:[diseases[0]];
+  // Compute confidence per disease
+  const predWithConf=predictions.map(d=>({...d,conf:Math.floor(Math.random()*30)+55}));
+  // Determine overall highest risk
+  const riskOrder={high:3,medium:2,low:1};
+  const topRisk=predWithConf.reduce((a,b)=>(riskOrder[b.risk]||0)>(riskOrder[a.risk]||0)?b:a,predWithConf[0]).risk;
+  // Collect lab entries
+  const labEntries=labs.map(l=>{const val=parseFloat(document.getElementById('lab_'+l.id)?.value);return{name:l.name,val,unit:l.unit,low:l.low,high:l.high,ok:isNaN(val)?null:val>=l.low&&val<=l.high};});
+  // Read profile directly from form fields so data is captured even if Save Profile was never clicked
+  const profileSnapshot={
+    name:(document.getElementById('patientName')?.value||patientProfile.name||'Anonymous').trim()||'Anonymous',
+    age:(document.getElementById('patientAge')?.value||patientProfile.age||'—').trim()||'—',
+    gender:(()=>{const g=document.getElementById('patientGender')?.value||patientProfile.gender||'—';return(g==='Select gender'||!g)?'—':g;})()
+  };
+  // Store for download — deep copy everything so mutations do not affect saved record
+  lastAnalysisResult={
+    patient:{...profileSnapshot},
+    date:new Date().toLocaleString('en-IN',{dateStyle:'long',timeStyle:'short'}),
+    symptoms:userSymptoms.map(s=>({name:s.name,severity:s.severity||'moderate'})),
+    predictions:predWithConf.map(d=>({id:d.id,name:d.name,desc:d.desc||'',expl:d.expl||'',risk:d.risk,conf:d.conf,criteria:d.criteria||[]})),
+    topRisk,
+    labEntries:labEntries.map(l=>({...l}))
+  };
+  // Save to patient history
+  saveToPatientHistory(lastAnalysisResult);
+  const matchedSymsMap={};
+  const symptomNamesLower=userSymptoms.map(s=>s.name.toLowerCase());
+  predWithConf.forEach(d=>{
+    matchedSymsMap[d.id]=userSymptoms.filter(s=>(d.criteria||[]).some(c=>s.name.toLowerCase().includes(c.toLowerCase())||c.toLowerCase().includes(s.name.toLowerCase())));
+  });
+  document.getElementById('resultsTop').innerHTML=predWithConf.map(d=>{
+    const matched=matchedSymsMap[d.id]||[];
+    const actions=[];
+    if(d.doctor)actions.push(`Consult a <strong>${d.doctor.specialty}</strong>`);
+    if(d.tests&&d.tests.length){d.tests.slice(0,3).forEach(t=>actions.push(t.name));}
+    return`<div class="card result-card">
+      <div class="result-card-header"><div><h3 style="font-family:'Fraunces',serif;margin-bottom:4px">${d.name}</h3><p style="font-size:13px">${d.desc}</p></div><span class="badge badge-${d.risk}">${d.risk[0].toUpperCase()+d.risk.slice(1)} Risk</span></div>
+      <div class="confidence-bar-wrap"><div class="confidence-label"><span>Confidence</span><span>${d.conf}%</span></div><div class="confidence-bar"><div class="confidence-fill" style="width:${d.conf}%"></div></div></div>
+      <p style="font-size:13.5px;margin-top:8px">${d.expl}</p>
+      ${matched.length?`<div style="margin-top:14px;padding-top:14px;border-top:1px solid var(--bg2)">
+        <div style="font-size:12px;font-weight:700;letter-spacing:.05em;text-transform:uppercase;color:var(--ink3);margin-bottom:8px">🔍 Matched Factors</div>
+        <div style="display:flex;flex-wrap:wrap;gap:6px">
+          ${matched.map(s=>`<span style="background:var(--teal-pale);color:var(--teal);border:1px solid rgba(26,127,116,.25);border-radius:20px;padding:3px 12px;font-size:12.5px;font-weight:500">${s.name} <span style="opacity:.6;font-size:11px">(${s.severity||'moderate'})</span></span>`).join('')}
+        </div>
+      </div>`:''}
+      ${actions.length?`<div style="margin-top:14px;padding-top:14px;border-top:1px solid var(--bg2)">
+        <div style="font-size:12px;font-weight:700;letter-spacing:.05em;text-transform:uppercase;color:var(--ink3);margin-bottom:8px">✅ Recommended Actions</div>
+        <ul style="margin:0;padding-left:18px;display:flex;flex-direction:column;gap:5px">
+          ${actions.map(a=>`<li style="font-size:13.5px;color:var(--ink2)">${a}</li>`).join('')}
+        </ul>
+      </div>`:''}
+    </div>`;
+  }).join('');
+  document.getElementById('labResultsBody').innerHTML=labEntries.map(l=>{
+    if(l.ok===null)return`<tr><td>${l.name}</td><td style="color:var(--ink3)">—</td><td>${l.low}–${l.high} ${l.unit}</td><td><span class="badge" style="background:var(--bg2);color:var(--ink3)">Not entered</span></td></tr>`;
+    return`<tr><td>${l.name}</td><td><strong>${l.val} ${l.unit}</strong></td><td>${l.low}–${l.high} ${l.unit}</td><td><span class="badge badge-${l.ok?'normal':'abnormal'}">${l.ok?'Normal':'Abnormal'}</span></td></tr>`;
+  }).join('');
+  showPage('results');
+  renderDoctorRecommendations(predWithConf);
+  renderTestRecommendations(predWithConf);
+}
+
+// ─ DOCTOR RECOMMENDATIONS ─
+function renderDoctorRecommendations(predictions){
+  const el=document.getElementById('doctorRecommendationSection');
+  if(!el)return;
+  // Collect unique specialties across all matched diseases
+  const seen=new Set();
+  const doctors=[];
+  predictions.forEach(d=>{
+    if(d.doctor&&!seen.has(d.doctor.specialty)){
+      seen.add(d.doctor.specialty);
+      doctors.push({disease:d.name,specialty:d.doctor.specialty,reason:d.doctor.reason,risk:d.risk});
+    }
+  });
+  if(!doctors.length){el.innerHTML='';return;}
+  const riskColor={high:'var(--red)',medium:'var(--amber)',low:'var(--green)'};
+  const riskBg={high:'var(--red-pale)',medium:'var(--amber-pale)',low:'var(--green-pale)'};
+  el.innerHTML=`
+  <div class="card" style="margin-bottom:0">
+    <div style="display:flex;align-items:center;gap:10px;margin-bottom:18px">
+      <span style="font-size:1.5rem">👨‍⚕️</span>
+      <div>
+        <h3 style="font-family:'Fraunces',serif;margin-bottom:2px">Recommended Doctor Specialties</h3>
+        <p style="font-size:13px;margin:0">Based on your diagnosis, consult these specialists for expert care</p>
+      </div>
+    </div>
+    <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:14px">
+      ${doctors.map((d,i)=>`
+      <div style="background:var(--bg);border:1.5px solid var(--border);border-radius:12px;padding:16px 18px;display:flex;gap:14px;align-items:flex-start">
+        <div style="width:48px;height:48px;border-radius:50%;background:var(--teal-pale);display:flex;align-items:center;justify-content:center;font-size:1.4rem;flex-shrink:0">🩺</div>
+        <div style="flex:1">
+          <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin-bottom:4px">
+            <strong style="font-size:14.5px;color:var(--ink)">${d.specialty}</strong>
+            <span style="background:${riskBg[d.risk]};color:${riskColor[d.risk]};font-size:10px;font-weight:700;padding:2px 8px;border-radius:10px;text-transform:uppercase">${d.risk} risk</span>
+          </div>
+          <div style="font-size:12px;color:var(--teal);font-weight:600;margin-bottom:5px">For: ${d.disease}</div>
+          <p style="font-size:13px;margin:0;color:var(--ink2)">${d.reason}</p>
+          <button class="btn btn-primary btn-sm" style="margin-top:10px;font-size:12px" onclick="showPage('doctors')">🔍 Find ${d.specialty.split('/')[0].trim()}</button>
+        </div>
+      </div>`).join('')}
+    </div>
+  </div>`;
+}
+
+// ─ TEST RECOMMENDATIONS ─
+function renderTestRecommendations(predictions){
+  const el=document.getElementById('recommendedTestsSection');
+  if(!el)return;
+  // Merge tests from all matched diseases, deduplicate by name
+  const seen=new Set();
+  const allTests=[];
+  predictions.forEach(d=>{
+    if(d.tests&&d.tests.length){
+      d.tests.forEach(t=>{
+        if(!seen.has(t.name)){
+          seen.add(t.name);
+          allTests.push({...t,disease:d.name,risk:d.risk});
+        }
+      });
+    }
+  });
+  if(!allTests.length){el.innerHTML='';return;}
+  const riskColor={high:'var(--red)',medium:'var(--amber)',low:'var(--green)'};
+  const riskBg={high:'var(--red-pale)',medium:'var(--amber-pale)',low:'var(--green-pale)'};
+  el.innerHTML=`
+  <div class="card" style="margin-bottom:0">
+    <div style="display:flex;align-items:center;gap:10px;margin-bottom:18px">
+      <span style="font-size:1.5rem">🧬</span>
+      <div>
+        <h3 style="font-family:'Fraunces',serif;margin-bottom:2px">Recommended Lab Tests</h3>
+        <p style="font-size:13px;margin:0">${allTests.length} test${allTests.length>1?'s':''} recommended based on your diagnosed conditions</p>
+      </div>
+    </div>
+    <div style="overflow-x:auto">
+      <table class="lab-table" style="min-width:500px">
+        <thead><tr>
+          <th style="width:32px">#</th>
+          <th>Test Name</th>
+          <th>Why It's Needed</th>
+          <th>Related Condition</th>
+        </tr></thead>
+        <tbody>
+          ${allTests.map((t,i)=>`
+          <tr>
+            <td style="font-family:'Fraunces',serif;font-weight:700;color:var(--teal)">${i+1}</td>
+            <td><strong style="color:var(--ink)">${t.name}</strong></td>
+            <td><span style="font-size:13.5px;color:var(--ink2)">${t.why}</span></td>
+            <td><span style="background:${riskBg[t.risk]};color:${riskColor[t.risk]};font-size:11px;font-weight:700;padding:2px 10px;border-radius:10px;white-space:nowrap">${t.disease}</span></td>
+          </tr>`).join('')}
+        </tbody>
+      </table>
+    </div>
+    <div style="margin-top:14px;padding-top:14px;border-top:1px solid var(--bg2);display:flex;align-items:center;gap:10px">
+      <span style="font-size:1.1rem">💡</span>
+      <p style="font-size:13px;margin:0;color:var(--ink2)">Share this list with your doctor before ordering tests. Some may not be necessary depending on your clinical history.</p>
+    </div>
+  </div>`;
+}
+
+
+function setStateFilter(btn,state){
+  document.querySelectorAll('.state-btn').forEach(b=>b.classList.remove('active'));
+  btn.classList.add('active');
+  activeStateFilter=state;
+  renderHospitalCards();
+}
+function renderHospitalCards(){
+  const q=(document.getElementById('hospitalSearch')?.value||'').toLowerCase();
+  const ty=document.getElementById('hospitalType')?.value||'';
+  const hospitals=BaseCrudService.getAll('hospitals').filter(h=>
+    (!activeStateFilter||h.state===activeStateFilter)&&
+    (!q||h.name.toLowerCase().includes(q)||h.city.toLowerCase().includes(q))&&
+    (!ty||h.type===ty)
+  );
+  const el=document.getElementById('hospitalsList');
+  if(!hospitals.length){el.innerHTML='<div style="grid-column:1/-1;text-align:center;padding:48px;color:var(--ink3)">🏥 No facilities found for selected filters.</div>';return;}
+  const stateColor={Kerala:'#1a7f74','Tamil Nadu':'#c97b2a',Karnataka:'#7c3aed',Delhi:'#2563eb',Punjab:'#e11d48'};
+  el.innerHTML=hospitals.map(h=>{
+    const color=stateColor[h.state]||'#1a7f74';
+    const mapsUrl=`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(h.name+' '+h.city+' '+h.state)}`;
+    const dirUrl=`https://www.google.com/maps/dir/?api=1&destination=${h.lat},${h.lng}`;
+    const icon=h.type==='Hospital'?'🏥':h.type==='Diagnostic Lab'?'🧪':'🚨';
+    const typeBadge=h.type==='Hospital'?'badge-hospital':h.type==='Diagnostic Lab'?'badge-lab':'badge-emergency';
+    return`<div class="card card-hover hosp-card">
+      <div class="hosp-card-state" style="background:${color}">${h.state} · ${h.city}</div>
+      <div class="hosp-card-body">
+        <div style="display:flex;align-items:flex-start;gap:12px">
+          <div style="width:44px;height:44px;border-radius:10px;background:${color}1a;display:flex;align-items:center;justify-content:center;font-size:1.3rem;flex-shrink:0">${icon}</div>
+          <div style="flex:1">
+            <div class="hosp-card-name">${h.name}</div>
+            <div class="hosp-card-meta"><span class="badge ${typeBadge}">${h.type}</span>${h.emergency?'&nbsp;&nbsp;<span style="font-size:11.5px;color:var(--red);font-weight:600">⚡ Emergency</span>':''}</div>
+            <div style="font-size:13px;color:var(--ink2);margin-bottom:3px">📍 ${h.city}, ${h.state}</div>
+            <div style="font-size:13px;color:var(--ink2)">📞 ${h.phone}</div>
+          </div>
+        </div>
+        <div class="hosp-card-actions">
+          <a href="${mapsUrl}" target="_blank" class="btn btn-map btn-sm">🗺 View on Maps</a>
+          <a href="${dirUrl}" target="_blank" class="btn btn-primary btn-sm">📍 Get Directions</a>
+          <a href="tel:${h.phone.replace(/\s/g,'')}" class="btn btn-ghost btn-sm">📞 Call</a>
+        </div>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+// ─ DOCTORS ─
+function renderDoctors(){
+  const q=(document.getElementById('doctorSearch')?.value||'').toLowerCase();
+  const sp=document.getElementById('doctorSpecialty')?.value||'';
+  const doctors=BaseCrudService.getAll('doctors').filter(d=>(!q||d.name.toLowerCase().includes(q)||d.specialty.toLowerCase().includes(q)||d.clinic.toLowerCase().includes(q))&&(!sp||d.specialty===sp));
+  const el=document.getElementById('doctorsList');
+  el.innerHTML=doctors.map(d=>`
+    <div class="card card-hover" style="padding:20px">
+      <div class="provider-card">
+        <div class="provider-avatar">${d.initials||d.name[0]}</div>
+        <div class="provider-info">
+          <h3>${d.name}</h3>
+          <div class="provider-meta">${d.specialty} · ${d.quals}</div>
+          <div class="provider-detail">🏥 ${d.clinic}</div>
+          <div class="provider-detail">📍 ${d.addr}</div>
+          <div class="provider-detail">📞 ${d.phone}</div>
+          <button class="btn btn-primary btn-sm" style="margin-top:8px" onclick="toast('📞 Contacting ${d.name}…')">📞 Contact Doctor</button>
+        </div>
+      </div>
+    </div>`).join('');
+}
+function filterDoctors(){renderDoctors();}
+
+// ─ RECORDS ─
+function toggleRecordForm(show){document.getElementById('recordForm').style.display=show?'block':'none';if(show)switchUploadTab('url');}
+function switchUploadTab(tab){currentUploadTab=tab;['url','pdf','img'].forEach(t=>{document.getElementById('tab-'+t).classList.toggle('active',t===tab);document.getElementById('panel-'+t).classList.toggle('active',t===tab);});}
+function handleDragOver(e){e.preventDefault();document.getElementById('pdfDropZone').classList.add('drag-over');}
+function handleDragLeave(){document.getElementById('pdfDropZone').classList.remove('drag-over');}
+function handleDrop(e){e.preventDefault();document.getElementById('pdfDropZone').classList.remove('drag-over');const f=e.dataTransfer.files[0];if(f&&f.type==='application/pdf')setPdfFile(f);else toast('⚠️ PDF files only.');}
+function handleFileSelect(e){const f=e.target.files[0];if(f)setPdfFile(f);}
+function setPdfFile(f){selectedPdfFile=f;document.getElementById('pdfFileName').textContent=f.name;document.getElementById('pdfFileSize').textContent=fmtSize(f.size);document.getElementById('pdfPreviewWrap').style.display='block';document.getElementById('pdfDropZone').style.display='none';}
+function removePdfFile(){selectedPdfFile=null;document.getElementById('pdfFileInput').value='';document.getElementById('pdfPreviewWrap').style.display='none';document.getElementById('pdfDropZone').style.display='block';}
+// ── IMAGE HANDLERS ──
+function handleImgDragOver(e){e.preventDefault();document.getElementById('imgDropZone').classList.add('drag-over');}
+function handleImgDragLeave(){document.getElementById('imgDropZone').classList.remove('drag-over');}
+function handleImgDrop(e){e.preventDefault();document.getElementById('imgDropZone').classList.remove('drag-over');const f=e.dataTransfer.files[0];if(f&&f.type.startsWith('image/'))setImgFile(f);else toast('⚠️ Image files only (JPG, PNG, GIF, WEBP).');}
+function handleImgSelect(e){const f=e.target.files[0];if(f)setImgFile(f);}
+function setImgFile(f){
+  selectedImgFile=f;
+  document.getElementById('imgFileName').textContent=f.name;
+  document.getElementById('imgFileSize').textContent=fmtSize(f.size);
+  const reader=new FileReader();
+  reader.onload=ev=>{document.getElementById('imgPreviewThumb').src=ev.target.result;};
+  reader.readAsDataURL(f);
+  document.getElementById('imgPreviewWrap').style.display='block';
+  document.getElementById('imgDropZone').style.display='none';
+}
+function removeImgFile(){selectedImgFile=null;document.getElementById('imgFileInput').value='';document.getElementById('imgPreviewWrap').style.display='none';document.getElementById('imgDropZone').style.display='block';document.getElementById('imgPreviewThumb').src='';}
+function fmtSize(b){if(b<1024)return b+' B';if(b<1024*1024)return(b/1024).toFixed(1)+' KB';return(b/(1024*1024)).toFixed(1)+' MB';}
+function saveRecord(){
+  const name=document.getElementById('recName').value.trim();
+  if(!name){toast('⚠️ Please enter a record name.');return;}
+  const isPdf=currentUploadTab==='pdf';
+  const isImg=currentUploadTab==='img';
+  if(isPdf&&!selectedPdfFile){toast('⚠️ Please select a PDF file.');return;}
+  if(isImg&&!selectedImgFile){toast('⚠️ Please select an image file.');return;}
+  const urlVal=document.getElementById('recUrl').value.trim();
+  if(!isPdf&&!isImg&&!urlVal){toast('⚠️ Please enter a document URL.');return;}
+  if(isPdf){const reader=new FileReader();reader.onload=e=>{pushRecord(name,isPdf,isImg,urlVal,e.target.result,null);};reader.readAsDataURL(selectedPdfFile);}
+  else if(isImg){const reader=new FileReader();reader.onload=e=>{pushRecord(name,isPdf,isImg,urlVal,null,e.target.result);};reader.readAsDataURL(selectedImgFile);}
+  else pushRecord(name,isPdf,isImg,urlVal,null,null);
+}
+function pushRecord(name,isPdf,isImg,urlVal,pdfDataUrl,imgDataUrl){
+  records.push({
+    name,type:document.getElementById('recType').value,
+    notes:document.getElementById('recNotes').value,
+    date:new Date().toLocaleDateString('en-GB',{day:'numeric',month:'short',year:'numeric'}),
+    isPdf,isImg,
+    url:(!isPdf&&!isImg)?urlVal:null,
+    pdfName:isPdf&&selectedPdfFile?selectedPdfFile.name:null,
+    pdfSize:isPdf&&selectedPdfFile?fmtSize(selectedPdfFile.size):null,
+    pdfDataUrl,
+    imgName:isImg&&selectedImgFile?selectedImgFile.name:null,
+    imgSize:isImg&&selectedImgFile?fmtSize(selectedImgFile.size):null,
+    imgDataUrl
+  });
+  document.getElementById('recName').value='';document.getElementById('recUrl').value='';document.getElementById('recNotes').value='';
+  removePdfFile();removeImgFile();toggleRecordForm(false);renderRecords();toast('✅ Record saved!');
+}
+function deleteRecord(i){records.splice(i,1);renderRecords();toast('🗑 Record deleted.');}
+function openPdf(i){const r=records[i];if(r.pdfDataUrl){const w=window.open();w.document.write(`<iframe src="${r.pdfDataUrl}" style="width:100%;height:100vh;border:none"></iframe>`);}}
+function openImg(i){
+  const r=records[i];if(!r.imgDataUrl)return;
+  const overlay=document.createElement('div');
+  overlay.style.cssText='position:fixed;inset:0;background:rgba(0,0,0,.88);z-index:9999;display:flex;align-items:center;justify-content:center;padding:20px;cursor:zoom-out';
+  overlay.innerHTML=`<div style="position:relative;max-width:90vw;max-height:90vh">
+    <img src="${r.imgDataUrl}" style="max-width:90vw;max-height:85vh;object-fit:contain;border-radius:10px;display:block;box-shadow:0 20px 80px rgba(0,0,0,.8)">
+    <div style="position:absolute;top:-14px;right:-14px;width:32px;height:32px;background:#fff;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:1rem;font-weight:700;cursor:pointer;color:#1a1a18;box-shadow:0 2px 12px rgba(0,0,0,.4)" onclick="event.stopPropagation();this.closest('[style*=fixed]').remove()">✕</div>
+    <div style="text-align:center;margin-top:10px;color:rgba(255,255,255,.65);font-size:13px">${r.imgName||r.name}</div>
+  </div>`;
+  overlay.onclick=()=>overlay.remove();
+  document.body.appendChild(overlay);
+}
+function renderRecords(){
+  const el=document.getElementById('recordsList');
+  if(!records.length){el.innerHTML='<div style="padding:36px;text-align:center;color:var(--ink3)">📂 No records yet. Click "Upload Record" to get started.</div>';return;}
+  el.innerHTML=records.map((r,i)=>`
+    <div class="record-item">
+      <div class="record-icon">${r.isImg?'🖼':r.isPdf?'📄':r.type==='Lab Report'?'🧪':r.type==='Prescription'?'💊':'📋'}</div>
+      <div class="record-info">
+        <h4>${r.name}</h4>
+        <div class="record-meta">${r.type} · ${r.isImg?'🖼 Image':r.isPdf?'📄 PDF':'🔗 URL'} · Added ${r.date}</div>
+        ${r.isPdf?`<div style="font-size:12.5px;color:var(--teal);margin-top:2px">📄 ${r.pdfName} <span style="color:var(--ink3)">(${r.pdfSize})</span></div>`:''}
+        ${r.isImg?`<div style="font-size:12.5px;color:var(--teal);margin-top:4px;display:flex;align-items:center;gap:8px"><img src="${r.imgDataUrl}" style="width:48px;height:36px;object-fit:cover;border-radius:5px;border:1.5px solid var(--border);cursor:pointer" onclick="openImg(${i})" title="Click to view"> ${r.imgName} <span style="color:var(--ink3)">(${r.imgSize})</span></div>`:''}
+        ${r.notes?`<p style="font-size:13px;margin-top:3px">${r.notes}</p>`:''}
+      </div>
+      <div class="record-actions">
+        ${r.isPdf&&r.pdfDataUrl?`<button class="btn btn-secondary btn-sm" onclick="openPdf(${i})">👁 View PDF</button>`:''}
+        ${r.isImg&&r.imgDataUrl?`<button class="btn btn-secondary btn-sm" onclick="openImg(${i})">🖼 View Image</button>`:''}
+        ${!r.isPdf&&!r.isImg&&r.url?`<a href="${r.url}" target="_blank" class="btn btn-secondary btn-sm">🔗 Open</a>`:''}
+        <button class="btn btn-danger btn-sm" onclick="deleteRecord(${i})">🗑</button>
+      </div>
+    </div>`).join('');
+}
+
+// ─ TRENDS ─
+function addTrendEntry(){
+  const key=document.getElementById('trendMetric').value;
+  const val=parseFloat(document.getElementById('entryValue').value);
+  const date=document.getElementById('entryDate').value;
+  const note=document.getElementById('entryNote').value.trim();
+  if(isNaN(val)){toast('⚠️ Enter a valid number.');return;}
+  if(!date){toast('⚠️ Select a date.');return;}
+  const d=trendDataStore[key];
+  d.entries.push({date,value:val,note});
+  d.entries.sort((a,b)=>a.date.localeCompare(b.date));
+  document.getElementById('entryValue').value='';document.getElementById('entryNote').value='';
+  renderChart();renderEntryLog();toast(`✅ Entry added to ${d.label}!`);
+}
+function deleteTrendEntry(key,idx){trendDataStore[key].entries.splice(idx,1);renderChart();renderEntryLog();toast('🗑 Entry removed.');}
+function fmtDate(str){if(!str)return'';const d=new Date(str+'T00:00:00');return d.toLocaleDateString('en-GB',{day:'numeric',month:'short',year:'2-digit'});}
+function renderEntryLog(){
+  const key=document.getElementById('trendMetric').value;
+  const d=trendDataStore[key];
+  document.getElementById('entryValueLabel').textContent=`Value (${d.unit})`;
+  const el=document.getElementById('entryLog');
+  if(!d.entries.length){el.innerHTML='<p style="font-size:13px;color:var(--ink3)">No entries yet.</p>';return;}
+  const sorted=[...d.entries].reverse();
+  el.innerHTML=`<div style="font-size:12px;font-weight:600;letter-spacing:.05em;text-transform:uppercase;color:var(--ink3);margin-bottom:8px">Recent Entries</div>
+    <div style="max-height:180px;overflow-y:auto;border:1px solid var(--border);border-radius:8px;background:var(--card)">
+      ${sorted.map((e,ri)=>{const realIdx=d.entries.length-1-ri;const ok=e.value>=d.normal[0]&&e.value<=d.normal[1];return`<div style="display:flex;align-items:center;justify-content:space-between;padding:8px 12px;border-bottom:1px solid var(--bg2);font-size:13.5px">
+        <div style="display:flex;align-items:center;gap:10px"><span style="color:var(--ink3);font-size:12px;min-width:80px">${fmtDate(e.date)}</span><strong style="color:${ok?'var(--green)':'var(--red)'}">${e.value} ${d.unit}</strong>${e.note?`<span style="color:var(--ink3);font-size:12px">${e.note}</span>`:''}</div>
+        <div style="display:flex;align-items:center;gap:8px"><span class="badge badge-${ok?'normal':'abnormal'}" style="font-size:11px">${ok?'Normal':'Out of range'}</span><button style="background:none;border:none;cursor:pointer;color:var(--ink3);font-size:13px;padding:2px 4px" onclick="deleteTrendEntry('${key}',${realIdx})">✕</button></div>
+      </div>`}).join('')}
+    </div>`;
+}
+function renderChart(){
+  const key=document.getElementById('trendMetric').value;
+  const d=trendDataStore[key];
+  document.getElementById('chartTitle').textContent=d.label+' Over Time';
+  document.getElementById('entryValueLabel').textContent=`Value (${d.unit})`;
+  const entries=d.entries;
+  const svg=document.getElementById('trendChart');
+  const lbl=document.getElementById('chartLabels');
+  const vals=entries.map(e=>e.value);
+  if(vals.length){document.getElementById('statLatest').textContent=vals[vals.length-1]+' '+d.unit;document.getElementById('statAvg').textContent=(vals.reduce((a,b)=>a+b,0)/vals.length).toFixed(1);document.getElementById('statCount').textContent=vals.length;}
+  else{['statLatest','statAvg'].forEach(id=>document.getElementById(id).textContent='—');document.getElementById('statCount').textContent='0';}
+  document.getElementById('statLatestLabel').textContent=`Latest (${d.unit})`;
+  if(!entries.length){svg.innerHTML=`<text x="400" y="120" text-anchor="middle" font-size="14" fill="var(--ink3)" font-family="DM Sans,sans-serif">No data yet — add entries above</text>`;lbl.innerHTML='';return;}
+  const W=800,H=240,padL=52,padR=28,padT=28,padB=32;
+  const allV=[...vals,d.normal[0],d.normal[1]];
+  const minV=Math.min(...allV)*.92,maxV=Math.max(...allV)*1.08;
+  const toX=i=>padL+i*((W-padL-padR)/Math.max(entries.length-1,1));
+  const toY=v=>padT+(1-(v-minV)/(maxV-minV))*(H-padT-padB);
+  const normY1=toY(d.normal[1]),normY0=toY(d.normal[0]);
+  let grid='',yax='';
+  for(let i=0;i<=5;i++){const v=minV+(maxV-minV)*(i/5);const y=toY(v);grid+=`<line x1="${padL}" y1="${y}" x2="${W-padR}" y2="${y}" stroke="var(--border)" stroke-width="1" stroke-dasharray="4,4"/>`;yax+=`<text x="${padL-6}" y="${y+4}" text-anchor="end" font-size="9.5" fill="var(--ink3)" font-family="DM Sans,sans-serif">${v.toFixed(v<10?1:0)}</text>`;}
+  const pts=entries.map((e,i)=>`${toX(i)},${toY(e.value)}`).join(' ');
+  const area=entries.length>1?`M ${toX(0)},${toY(entries[0].value)} `+entries.map((e,i)=>`L ${toX(i)},${toY(e.value)}`).join(' ')+` L ${toX(entries.length-1)},${H-padB} L ${toX(0)},${H-padB} Z`:'';
+  svg.innerHTML=`<defs><linearGradient id="ag" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="${d.color}" stop-opacity="0.22"/><stop offset="100%" stop-color="${d.color}" stop-opacity="0"/></linearGradient></defs>
+    ${grid}${yax}
+    <rect x="${padL}" y="${normY1}" width="${W-padL-padR}" height="${Math.max(normY0-normY1,1)}" fill="rgba(26,127,116,0.09)"/>
+    <line x1="${padL}" y1="${normY1}" x2="${W-padR}" y2="${normY1}" stroke="rgba(26,127,116,0.35)" stroke-width="1.2" stroke-dasharray="6,4"/>
+    <line x1="${padL}" y1="${normY0}" x2="${W-padR}" y2="${normY0}" stroke="rgba(26,127,116,0.35)" stroke-width="1.2" stroke-dasharray="6,4"/>
+    ${area?`<path d="${area}" fill="url(#ag)"/>`:''} 
+    ${entries.length>1?`<polyline fill="none" stroke="${d.color}" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" points="${pts}"/>`:''}
+    ${entries.map((e,i)=>{const ok=e.value>=d.normal[0]&&e.value<=d.normal[1];const cx=toX(i),cy=toY(e.value);return`<circle cx="${cx}" cy="${cy}" r="5" fill="${ok?d.color:'var(--red)'}" stroke="#fff" stroke-width="2.5"><title>${fmtDate(e.date)}: ${e.value} ${d.unit}</title></circle><text x="${cx}" y="${cy-11}" text-anchor="middle" font-size="9.5" fill="${ok?d.color:'var(--red)'}" font-family="DM Sans,sans-serif" font-weight="600">${e.value}</text>`;}).join('')}`;
+  const step=Math.ceil(entries.length/10);
+  lbl.innerHTML=entries.map((e,i)=>i%step===0?`<span style="flex:none;font-size:11px">${fmtDate(e.date)}</span>`:'').join('');
+}
+
+// ─ REMINDERS ─
+function toggleReminderForm(show){document.getElementById('reminderForm').style.display=show?'block':'none';}
+function saveReminder(){
+  const title=document.getElementById('remTitle').value;if(!title){toast('⚠️ Please enter a title.');return;}
+  const colors={Medicine:'#1a7f74','Lab Test':'#c97b2a','Doctor Visit':'#2563eb',Other:'#6b7280'};
+  reminders.push({title,type:document.getElementById('remType').value,date:document.getElementById('remDate').value,time:document.getElementById('remTime').value,notes:document.getElementById('remNotes').value,color:colors[document.getElementById('remType').value]||'#6b7280'});
+  document.getElementById('remTitle').value='';document.getElementById('remNotes').value='';
+  toggleReminderForm(false);renderReminders();toast('✅ Reminder set!');
+}
+function deleteReminder(i){reminders.splice(i,1);renderReminders();toast('🗑 Reminder deleted.');}
+function renderReminders(){
+  const el=document.getElementById('remindersList');
+  if(!reminders.length){el.innerHTML='<div style="padding:36px;text-align:center;color:var(--ink3)">🔔 No reminders yet.</div>';return;}
+  el.innerHTML=`<div style="padding:4px 16px">`+reminders.map((r,i)=>`
+    <div style="display:flex;justify-content:space-between;align-items:center;padding:14px 0;border-bottom:1px solid var(--bg2)">
+      <div style="display:flex;gap:14px;align-items:center">
+        <div style="width:12px;height:12px;border-radius:50%;background:${r.color};flex-shrink:0"></div>
+        <div><div style="font-size:14.5px;font-weight:600;margin-bottom:2px">${r.title}</div><div style="font-size:12.5px;color:var(--ink3)">${r.type}${r.date?' · '+r.date:''}${r.time?' at '+r.time:''}</div>${r.notes?`<div style="font-size:12.5px;color:var(--ink3);margin-top:2px">${r.notes}</div>`:''}</div>
+      </div>
+      <button class="btn btn-danger btn-sm" onclick="deleteReminder(${i})">🗑</button>
+    </div>`).join('')+`</div>`;
+}
+
+// ─ FAMILY HISTORY ─
+function toggleFHForm(show){document.getElementById('fhForm').style.display=show?'block':'none';}
+function saveFH(){
+  const cond=document.getElementById('fhCondition').value;if(!cond){toast('⚠️ Please enter a condition name.');return;}
+  familyHistory.push({condition:cond,relation:document.getElementById('fhRelation').value,year:document.getElementById('fhYear').value,hereditary:document.getElementById('fhHereditary').value,impact:document.getElementById('fhImpact').value,notes:document.getElementById('fhNotes').value});
+  ['fhCondition','fhYear','fhImpact','fhNotes'].forEach(id=>document.getElementById(id).value='');
+  toggleFHForm(false);renderFH();toast('✅ Family history record saved!');
+}
+function deleteFH(i){familyHistory.splice(i,1);renderFH();toast('🗑 Record deleted.');}
+function renderFH(){
+  const el=document.getElementById('fhList');
+  if(!familyHistory.length){el.innerHTML='<div style="padding:36px;text-align:center;color:var(--ink3)">👨‍👩‍👧 No family history records yet.</div>';return;}
+  el.innerHTML=familyHistory.map((f,i)=>`
+    <div style="padding:18px 20px;border-bottom:1px solid var(--bg2)">
+      <div style="display:flex;justify-content:space-between;align-items:flex-start">
+        <div><div style="display:flex;align-items:center;gap:8px;margin-bottom:4px"><strong style="font-size:15px">${f.condition}</strong>${f.hereditary==='yes'?'<span style="font-size:11px;padding:2px 8px;border-radius:8px;background:var(--amber-pale);color:var(--amber);font-weight:600">Hereditary</span>':''}</div>
+          <div style="font-size:13px;color:var(--ink3)">${f.relation}${f.year?' · Diagnosed '+f.year:''}</div>
+          ${f.impact?`<div style="font-size:13.5px;color:var(--ink2);margin-top:4px">${f.impact}</div>`:''}${f.notes?`<div style="font-size:13px;color:var(--ink3);margin-top:3px">${f.notes}</div>`:''}
+        </div>
+        <button class="btn btn-danger btn-sm" onclick="deleteFH(${i})">🗑 Delete</button>
+      </div>
+    </div>`).join('');
+}
+
+// ─ TOAST ─
+function toast(msg){const t=document.getElementById('toast');t.textContent=msg;t.classList.add('show');setTimeout(()=>t.classList.remove('show'),2800);}
+
+// ─ LIVE SYNC: listen for admin changes ─
+window.addEventListener('storage',e=>{
+  if(e.key&&e.key.startsWith('dnx_')){
+    // Rebuild dynamic inputs if on home page
+    const activePage=document.querySelector('.page.active')?.id;
+    if(activePage==='page-home'){buildSymptomSelect();buildLabInputs();}
+    if(activePage==='page-hospitals'){renderHospitalCards();}
+    if(activePage==='page-doctors'){renderDoctors();}
+    if(activePage==='page-tests'){renderLabTestsTable();}
+  }
+});
+
+// ─ INIT ─
+document.addEventListener('DOMContentLoaded',()=>{
+  // Refresh diseases in localStorage to pick up doctor & tests fields added in this version
+  const stored=JSON.parse(localStorage.getItem('dnx_diseases')||'[]');
+  if(!stored.length||!stored[0].doctor){
+    localStorage.removeItem('dnx_diseases');
+  }
+  buildSymptomSelect();
+  buildLabInputs();
+  const today=new Date().toISOString().split('T')[0];
+  const ed=document.getElementById('entryDate');
+  if(ed)ed.value=today;
+});
+</script>
+
+<script>
+// ═══════════════ ADMIN SYSTEM ═══════════════
+const ADMIN_CREDS={user:'admin',pw:'admin123'};
+let isAdminLoggedIn=false;
+
+function openAdminLoginModal(){
+  document.getElementById('adminLoginOverlay').style.display='flex';
+  document.getElementById('adminLoginErr').style.display='none';
+  document.getElementById('adminUser').value='';
+  document.getElementById('adminPw').value='';
+  setTimeout(()=>document.getElementById('adminUser').focus(),80);
+}
+function closeAdminModal(e){
+  if(!e||e.target===document.getElementById('adminLoginOverlay'))
+    document.getElementById('adminLoginOverlay').style.display='none';
+}
+function doAdminLogin(){
+  const u=document.getElementById('adminUser').value.trim();
+  const p=document.getElementById('adminPw').value;
+  if(u===ADMIN_CREDS.user&&p===ADMIN_CREDS.pw){
+    isAdminLoggedIn=true;
+    document.getElementById('adminLoginOverlay').style.display='none';
+    document.getElementById('adminSessionBadge').style.display='inline-flex';
+    document.getElementById('adminLoginBtn').style.display='none';
+    const nl=document.getElementById('adminNavLink');
+    if(nl)nl.style.display='inline-flex';
+    toast('🔐 Admin access granted! Welcome to the Control Panel.');
+    _gotoAdminPanel();
+  } else {
+    document.getElementById('adminLoginErr').style.display='block';
+  }
+}
+function _gotoAdminPanel(){
+  document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
+  document.getElementById('page-admin').classList.add('active');
+  window.scrollTo({top:0,behavior:'smooth'});
+  renderAdminDiseases();
+  renderAdminSymptoms();
+  updateAdminCounts();
+}
+
+// Wrap showPage to guard admin
+(function(){
+  const orig=window.showPage;
+  window.showPage=function(id){
+    if(id==='admin'){if(!isAdminLoggedIn){openAdminLoginModal();return;}_gotoAdminPanel();return;}
+    orig(id);
+  };
+})();
+
+// Sign out resets admin
+function doSignOut(){
+  isAdminLoggedIn=false;
+  isLoggedIn=false;
+  document.getElementById('adminSessionBadge').style.display='none';
+  document.getElementById('adminLoginBtn').style.display='flex';
+  document.getElementById('loginBtn').style.display='flex';
+  document.getElementById('profileBtn').style.display='none';
+  document.getElementById('signOutBtn').style.display='none';
+  const nl=document.getElementById('adminNavLink');
+  if(nl)nl.style.display='none';
+  showPage('home');
+  toast('👋 Signed out.');
+}
+
+// Admin tab switching
+function showAdminTab(tab){
+  ['diseases','symptoms','history'].forEach(t=>{
+    const el=document.getElementById('adminTab-'+t);
+    if(el)el.style.display=t===tab?'block':'none';
+    const b=document.getElementById('navBtn-'+t);
+    if(b)b.classList.toggle('active',t===tab);
+  });
+  if(tab==='history'){renderAdminHistory();}
+}
+
+function updateAdminCounts(){
+  const d=BaseCrudService.getAll('diseases');
+  const s=BaseCrudService.getAll('symptoms');
+  const h=getPatientHistory();
+  const cd=document.getElementById('cnt-diseases');
+  const cs=document.getElementById('cnt-symptoms');
+  const ch=document.getElementById('cnt-history');
+  if(cd)cd.textContent=d.length;
+  if(cs)cs.textContent=s.length;
+  if(ch)ch.textContent=h.length;
+}
+
+// ═══ AI GENERATE RECOMMENDATIONS ═══
+async function generateAIRecommendations(){
+  const name=document.getElementById('dName').value.trim();
+  const desc=document.getElementById('dDesc').value.trim();
+  const criteria=document.getElementById('dCriteria').value.trim();
+  if(!name){toast('⚠ Enter a disease name first.');return;}
+
+  const btn=document.getElementById('aiGenBtn');
+  const statusEl=document.getElementById('aiGenStatus');
+  const statusDot=document.getElementById('aiGenStatusDot');
+  const statusText=document.getElementById('aiGenStatusText');
+
+  // Reset status
+  statusDot.style.background='#00d4aa';
+  statusDot.style.animation='blink 1s ease infinite';
+  statusEl.style.display='flex';
+  statusText.textContent='Contacting AI...';
+  btn.disabled=true;
+  btn.style.opacity='0.6';
+  btn.innerHTML='⏳ Generating...';
+
+  const prompt=`You are a medical expert. For the disease: "${name}"${desc?' — '+desc:''}${criteria?', symptoms: '+criteria:''}.
+
+Return ONLY a raw JSON object (no markdown, no backticks, no extra text):
+{"specialty":"Endocrinologist","reason":"Manages hormonal and metabolic disorders.","tests":[{"name":"Fasting Blood Glucose","why":"Baseline sugar measurement"},{"name":"HbA1c","why":"3-month sugar average"},{"name":"Lipid Profile","why":"Cardiovascular risk"},{"name":"Creatinine","why":"Kidney function"},{"name":"CBC","why":"Overall blood health"}]}`;
+
+  try{
+    statusText.textContent='Generating with AI...';
+    const res=await fetch('https://api.anthropic.com/v1/messages',{
+      method:'POST',
+      headers:{
+        'Content-Type':'application/json',
+        'anthropic-dangerous-direct-browser-access':'true'
+      },
+      body:JSON.stringify({
+        model:'claude-sonnet-4-20250514',
+        max_tokens:600,
+        messages:[{role:'user',content:prompt}]
+      })
+    });
+
+    if(!res.ok){
+      const err=await res.json().catch(()=>({}));
+      throw new Error(err?.error?.message||'API error '+res.status);
+    }
+
+    const data=await res.json();
+    const raw=(data.content||[]).filter(b=>b.type==='text').map(b=>b.text).join('');
+
+    // Robust JSON extraction — find first { ... } block
+    const match=raw.match(/\{[\s\S]*\}/);
+    if(!match)throw new Error('No JSON found in response');
+    const parsed=JSON.parse(match[0]);
+
+    // Populate fields
+    document.getElementById('dDoctorSpecialty').value=parsed.specialty||'';
+    document.getElementById('dDoctorReason').value=parsed.reason||'';
+    document.getElementById('dTests').value=(parsed.tests||[]).map(t=>`${t.name}|${t.why}`).join('\n');
+
+    statusDot.style.background='#3dd68c';
+    statusDot.style.animation='none';
+    statusText.textContent='✅ Done! Review the fields below and edit if needed.';
+    btn.innerHTML='🔄 Regenerate';
+
+  }catch(err){
+    console.error('AI gen error:',err);
+    statusDot.style.background='#ff5e5e';
+    statusDot.style.animation='none';
+    statusText.textContent='⚠ Failed: '+err.message+'. Fill fields manually or retry.';
+    btn.innerHTML='⚡ Retry';
+  }finally{
+    btn.disabled=false;
+    btn.style.opacity='1';
+  }
+}
+
+// ═══ DISEASES CRUD ═══
+let _diseaseFormOpen=false;
+function toggleDiseaseForm(force){
+  _diseaseFormOpen=force!==undefined?force:!_diseaseFormOpen;
+  document.getElementById('diseaseFormWrap').style.display=_diseaseFormOpen?'block':'none';
+  if(!_diseaseFormOpen){
+    document.getElementById('editDiseaseId').value='';
+    ['dName','dDesc','dExpl','dCriteria','dDoctorSpecialty','dDoctorReason','dTests'].forEach(x=>document.getElementById(x).value='');
+    document.getElementById('dRisk').value='low';
+    document.getElementById('diseaseFormTitle').textContent='➕ Add New Disease';
+    document.getElementById('aiGenStatus').style.display='none';
+    document.getElementById('aiGenStatusDot').style.background='#00d4aa';
+    document.getElementById('aiGenStatusText').textContent='Researching disease data...';
+  }
+}
+function editDisease(id){
+  const d=BaseCrudService.getAll('diseases').find(x=>x.id===id);
+  if(!d)return;
+  document.getElementById('editDiseaseId').value=id;
+  document.getElementById('dName').value=d.name;
+  document.getElementById('dRisk').value=d.risk;
+  document.getElementById('dDesc').value=d.desc||'';
+  document.getElementById('dExpl').value=d.expl||'';
+  document.getElementById('dCriteria').value=(d.criteria||[]).join(', ');
+  document.getElementById('dDoctorSpecialty').value=d.doctor?.specialty||'';
+  document.getElementById('dDoctorReason').value=d.doctor?.reason||'';
+  document.getElementById('dTests').value=(d.tests||[]).map(t=>t.name+'|'+t.why).join('\n');
+  document.getElementById('diseaseFormTitle').textContent='✏️ Edit Disease';
+  _diseaseFormOpen=true;
+  document.getElementById('diseaseFormWrap').style.display='block';
+  document.getElementById('diseaseFormWrap').scrollIntoView({behavior:'smooth',block:'start'});
+}
+function saveDisease(){
+  const name=document.getElementById('dName').value.trim();
+  if(!name){toast('⚠ Disease name is required');return;}
+  const editId=parseInt(document.getElementById('editDiseaseId').value)||0;
+  const criteria=document.getElementById('dCriteria').value.split(',').map(s=>s.trim()).filter(Boolean);
+  const doctorSpecialty=document.getElementById('dDoctorSpecialty').value.trim();
+  const doctorReason=document.getElementById('dDoctorReason').value.trim();
+  const testsRaw=document.getElementById('dTests').value.trim();
+  const tests=testsRaw?testsRaw.split('\n').map(line=>{const[nm,...rest]=line.split('|');return nm.trim()?{name:nm.trim(),why:rest.join('|').trim()||''}:null;}).filter(Boolean):[];
+  const doctor=doctorSpecialty?{specialty:doctorSpecialty,reason:doctorReason}:undefined;
+  const data={name,risk:document.getElementById('dRisk').value,desc:document.getElementById('dDesc').value.trim(),expl:document.getElementById('dExpl').value.trim(),criteria,doctor,tests};
+  if(editId){BaseCrudService.update('diseases',editId,data);toast('✅ Disease updated — live on patient site!');}
+  else{BaseCrudService.create('diseases',data);toast('✅ Disease "'+name+'" added to the database!');}
+  autoSyncSymptomsFromDisease(criteria, name);
+  toggleDiseaseForm(false);
+  renderAdminDiseases();
+  updateAdminCounts();
+}
+
+// Automatically adds disease criteria as symptoms if they don't already exist
+function autoSyncSymptomsFromDisease(criteria, diseaseName){
+  const existing=BaseCrudService.getAll('symptoms');
+  const existingNames=existing.map(s=>s.name.toLowerCase());
+  let added=[];
+  criteria.forEach(c=>{
+    if(c && !existingNames.includes(c.toLowerCase())){
+      BaseCrudService.create('symptoms',{name:c, severity_default:'moderate', category:'General'});
+      added.push(c);
+    }
+  });
+  if(added.length){
+    // Refresh admin symptoms table and patient picker
+    renderAdminSymptoms();
+    updateAdminCounts();
+    buildSymptomSelect();
+    // Show notification with list of added symptoms
+    showSyncBanner(added, diseaseName);
+  }
+}
+
+function showSyncBanner(added, diseaseName){
+  // Remove existing banner if any
+  const old=document.getElementById('symptomSyncBanner');if(old)old.remove();
+  const banner=document.createElement('div');
+  banner.id='symptomSyncBanner';
+  banner.style.cssText='position:fixed;top:72px;left:50%;transform:translateX(-50%);z-index:900;background:#0d1117;border:1.5px solid rgba(0,212,170,.5);border-radius:12px;padding:14px 22px;box-shadow:0 8px 40px rgba(0,0,0,.6);display:flex;align-items:flex-start;gap:12px;max-width:520px;width:90%;animation:fadeUp .4s ease both';
+  banner.innerHTML=`<span style="font-size:1.4rem;flex-shrink:0">🔄</span>
+    <div>
+      <div style="color:#00d4aa;font-weight:700;font-size:14px;margin-bottom:4px">Auto-Synced ${added.length} New Symptom${added.length>1?'s':''} from "<span style="color:#e8eaf2">${diseaseName}</span>"</div>
+      <div style="color:#9aa0bc;font-size:12.5px">Added to Symptom Index &amp; patient picker: <strong style="color:#e8eaf2">${added.join(', ')}</strong></div>
+    </div>
+    <button onclick="this.parentElement.remove()" style="background:none;border:none;color:#5a607a;cursor:pointer;font-size:1.1rem;padding:0;margin-left:auto;flex-shrink:0">✕</button>`;
+  document.body.appendChild(banner);
+  setTimeout(()=>{if(banner.parentElement)banner.remove();},7000);
+}
+function deleteDisease(id){
+  const d=BaseCrudService.getAll('diseases').find(x=>x.id===id);
+  if(!d||!confirm('Delete "'+d.name+'" from the disease database?\n\nThis removes it from patient analysis results.'))return;
+  BaseCrudService.remove('diseases',id);
+  renderAdminDiseases();updateAdminCounts();
+  toast('🗑 Disease deleted.');
+}
+function renderAdminDiseases(){
+  const q=(document.getElementById('disSearch')?.value||'').toLowerCase();
+  const r=document.getElementById('disRiskFilter')?.value||'';
+  const items=BaseCrudService.getAll('diseases').filter(d=>(!q||d.name.toLowerCase().includes(q))&&(!r||d.risk===r));
+  const tbody=document.getElementById('diseasesTbody');
+  if(!tbody)return;
+  if(!items.length){tbody.innerHTML='<tr><td colspan="5" style="text-align:center;padding:40px;color:#5a607a">No diseases found.</td></tr>';return;}
+  tbody.innerHTML=items.map(d=>`<tr>
+    <td class="adm-tbl-td"><strong style="color:#e8eaf2">${d.name}</strong><div style="font-size:12px;color:#5a607a;margin-top:2px">${d.desc||''}</div></td>
+    <td class="adm-tbl-td"><span class="adm-badge-risk risk-${d.risk}">${d.risk}</span></td>
+    <td class="adm-tbl-td" style="max-width:200px">${(d.criteria||[]).map(c=>'<span class="adm-chip-sm">'+c+'</span>').join('')}</td>
+    <td class="adm-tbl-td">
+      ${d.doctor?`<div style="font-size:12.5px;color:#00d4aa;font-weight:600;margin-bottom:3px">🩺 ${d.doctor.specialty}</div>`:'<span style="color:#5a607a;font-size:12px">—</span>'}
+      ${d.tests&&d.tests.length?`<div style="font-size:11px;color:#5a607a">${d.tests.length} lab test${d.tests.length>1?'s':''} listed</div>`:''}
+    </td>
+    <td class="adm-tbl-td"><div style="display:flex;gap:6px"><button class="adm-action-btn adm-edit-btn" onclick="editDisease(${d.id})">✏️ Edit</button><button class="adm-action-btn adm-del-btn" onclick="deleteDisease(${d.id})">🗑</button></div></td>
+  </tr>`).join('');
+}
+
+// ═══ SYMPTOMS CRUD ═══
+let _symptomFormOpen=false;
+function toggleSymptomForm(force){
+  _symptomFormOpen=force!==undefined?force:!_symptomFormOpen;
+  document.getElementById('symptomFormWrap').style.display=_symptomFormOpen?'block':'none';
+  if(!_symptomFormOpen){
+    document.getElementById('editSymptomId').value='';
+    document.getElementById('sName').value='';
+    document.getElementById('sSev').value='moderate';
+    document.getElementById('sCat').value='General';
+    document.getElementById('symptomFormTitle').textContent='➕ Add New Symptom';
+  }
+}
+function editSymptom(id){
+  const s=BaseCrudService.getAll('symptoms').find(x=>x.id===id);
+  if(!s)return;
+  document.getElementById('editSymptomId').value=id;
+  document.getElementById('sName').value=s.name;
+  document.getElementById('sSev').value=s.severity_default||'moderate';
+  document.getElementById('sCat').value=s.category||'General';
+  document.getElementById('symptomFormTitle').textContent='✏️ Edit Symptom';
+  _symptomFormOpen=true;
+  document.getElementById('symptomFormWrap').style.display='block';
+  document.getElementById('symptomFormWrap').scrollIntoView({behavior:'smooth',block:'start'});
+}
+function saveSymptom(){
+  const name=document.getElementById('sName').value.trim();
+  if(!name){toast('⚠ Symptom name is required');return;}
+  const editId=parseInt(document.getElementById('editSymptomId').value)||0;
+  const data={name,severity_default:document.getElementById('sSev').value,category:document.getElementById('sCat').value};
+  if(editId){BaseCrudService.update('symptoms',editId,data);toast('✅ Symptom updated!');}
+  else{BaseCrudService.create('symptoms',data);toast('✅ "'+name+'" added — now visible in patient symptom picker!');}
+  toggleSymptomForm(false);
+  renderAdminSymptoms();
+  updateAdminCounts();
+  // KEY: immediately refresh the patient-facing symptom dropdown
+  buildSymptomSelect();
+}
+function deleteSymptom(id){
+  const s=BaseCrudService.getAll('symptoms').find(x=>x.id===id);
+  if(!s||!confirm('Delete "'+s.name+'"?\n\nIt will be removed from the patient symptom picker.'))return;
+  BaseCrudService.remove('symptoms',id);
+  renderAdminSymptoms();updateAdminCounts();
+  buildSymptomSelect();
+  toast('🗑 Symptom "'+s.name+'" deleted.');
+}
+function renderAdminSymptoms(){
+  const q=(document.getElementById('symSearch')?.value||'').toLowerCase();
+  const cat=document.getElementById('symCatFilter')?.value||'';
+  const items=BaseCrudService.getAll('symptoms').filter(s=>(!q||s.name.toLowerCase().includes(q))&&(!cat||s.category===cat));
+  const tbody=document.getElementById('symptomsTbody');
+  if(!tbody)return;
+  if(!items.length){tbody.innerHTML='<tr><td colspan="4" style="text-align:center;padding:40px;color:#5a607a">No symptoms found.</td></tr>';return;}
+  const sc={mild:'#3dd68c',moderate:'#ffb347',severe:'#ff5e5e'};
+  tbody.innerHTML=items.map(s=>`<tr>
+    <td class="adm-tbl-td"><strong style="color:#e8eaf2">${s.name}</strong></td>
+    <td class="adm-tbl-td"><span style="background:rgba(90,96,122,.2);color:#9aa0bc;border-radius:10px;padding:2px 9px;font-size:11px;font-weight:600">${s.category||'General'}</span></td>
+    <td class="adm-tbl-td"><span style="color:${sc[s.severity_default]||'#9aa0bc'};font-weight:600;text-transform:capitalize;font-size:13px">${s.severity_default||'moderate'}</span></td>
+    <td class="adm-tbl-td"><div style="display:flex;gap:6px"><button class="adm-action-btn adm-edit-btn" onclick="editSymptom(${s.id})">✏️ Edit</button><button class="adm-action-btn adm-del-btn" onclick="deleteSymptom(${s.id})">🗑</button></div></td>
+  </tr>`).join('');
+}
+
+// Inject admin nav link on load
+document.addEventListener('DOMContentLoaded',()=>{
+  const nav=document.querySelector('nav');
+  if(nav&&!document.getElementById('adminNavLink')){
+    const lnk=document.createElement('span');
+    lnk.id='adminNavLink';
+    lnk.className='nav-link';
+    lnk.style.cssText='display:none;background:rgba(0,212,170,.08);color:#00d4aa;border:1px solid rgba(0,212,170,.2)';
+    lnk.textContent='⚙ Admin Panel';
+    lnk.onclick=()=>showPage('admin');
+    nav.appendChild(lnk);
+  }
+  const sob=document.getElementById('signOutBtn');
+  if(sob)sob.onclick=doSignOut;
+});
+
+// ═══ PATIENT HISTORY ═══
+const HISTORY_KEY='dnx_patient_history';
+function getPatientHistory(){try{return JSON.parse(localStorage.getItem(HISTORY_KEY)||'[]');}catch{return[];}}
+function saveToPatientHistory(result){
+  const history=getPatientHistory();
+  const entry={
+    id:Date.now(),
+    patientName:result.patient.name||'Anonymous',
+    patientAge:result.patient.age||'—',
+    patientGender:result.patient.gender||'—',
+    date:result.date,
+    symptoms:result.symptoms.map(s=>s.name+' ('+s.severity+')'),
+    conditions:result.predictions.map(d=>d.name),
+    topRisk:result.topRisk,
+    confidences:result.predictions.map(d=>({name:d.name,conf:d.conf,risk:d.risk})),
+    labEntries:result.labEntries.filter(l=>l.ok!==null).map(l=>({name:l.name,val:l.val,unit:l.unit,ok:l.ok}))
+  };
+  history.unshift(entry);
+  if(history.length>500)history.splice(500);
+  localStorage.setItem(HISTORY_KEY,JSON.stringify(history));
+  updateAdminCounts();
+}
+function deleteHistoryEntry(id){
+  const h=getPatientHistory().filter(e=>e.id!==id);
+  localStorage.setItem(HISTORY_KEY,JSON.stringify(h));
+  renderAdminHistory();updateAdminCounts();toast('🗑 Entry removed.');
+}
+function clearAllHistory(){
+  if(!confirm('Clear ALL patient history records?\n\nThis action cannot be undone.'))return;
+  localStorage.removeItem(HISTORY_KEY);
+  renderAdminHistory();updateAdminCounts();toast('🗑 All history cleared.');
+}
+function exportHistoryCSV(){
+  const h=getPatientHistory();
+  if(!h.length){toast('No history to export.');return;}
+  const rows=[['#','Patient','Age','Gender','Date','Symptoms','Conditions','Top Risk','Lab Values']];
+  h.forEach((e,i)=>rows.push([
+    i+1,e.patientName,e.patientAge,e.patientGender,'"'+e.date+'"',
+    '"'+e.symptoms.join('; ')+'"',
+    '"'+e.conditions.join('; ')+'"',
+    e.topRisk,
+    '"'+e.labEntries.map(l=>l.name+': '+l.val+' '+l.unit+' ('+(l.ok?'Normal':'Abnormal')+')').join('; ')+'"'
+  ]));
+  const csv=rows.map(r=>r.join(',')).join('\n');
+  const blob=new Blob([csv],{type:'text/csv'});
+  const a=document.createElement('a');a.href=URL.createObjectURL(blob);
+  a.download='DIAGNOLYTIX_PatientHistory_'+new Date().toISOString().slice(0,10)+'.csv';
+  a.click();toast('✅ CSV exported!');
+}
+function renderAdminHistory(){
+  const q=(document.getElementById('histSearch')?.value||'').toLowerCase();
+  const rf=document.getElementById('histRiskFilter')?.value||'';
+  const all=getPatientHistory();
+  const items=all.filter(e=>(!q||(e.patientName.toLowerCase().includes(q)||e.conditions.join(' ').toLowerCase().includes(q)))&&(!rf||e.topRisk===rf));
+  const elT=document.getElementById('hStatTotal');if(elT)elT.textContent=all.length;
+  const elH=document.getElementById('hStatHighRisk');if(elH)elH.textContent=all.filter(e=>e.topRisk==='high').length;
+  const elU=document.getElementById('hStatUnique');if(elU){const n=new Set(all.map(e=>e.patientName.toLowerCase().trim()).filter(x=>x&&x!=='anonymous'));elU.textContent=n.size||all.length;}
+  const tbody=document.getElementById('historyTbody');
+  if(!tbody)return;
+  if(!items.length){
+    tbody.innerHTML='<tr><td colspan="7" style="text-align:center;padding:48px;color:#5a607a"><div style="font-size:2.2rem;margin-bottom:10px">📋</div><div style="font-size:14px">No patient history yet.</div><div style="font-size:12px;margin-top:6px">Records appear here automatically when patients run a Health Assessment.</div></td></tr>';
+    return;
+  }
+  const rc={high:'rgba(255,94,94,.12)',medium:'rgba(255,179,71,.12)',low:'rgba(61,214,140,.12)'};
+  const rt={high:'#ff5e5e',medium:'#ffb347',low:'#3dd68c'};
+  tbody.innerHTML=items.map((e,i)=>`<tr>
+    <td class="adm-tbl-td" style="color:#5a607a;font-size:12px">${i+1}</td>
+    <td class="adm-tbl-td">
+      <div style="font-weight:700;color:#e8eaf2">${e.patientName}</div>
+      <div style="font-size:11px;color:#5a607a">${e.patientAge&&e.patientAge!=='—'?e.patientAge+' yrs':''} ${e.patientGender&&e.patientGender!=='—'?'· '+e.patientGender:''}</div>
+    </td>
+    <td class="adm-tbl-td" style="font-size:12px;color:#9aa0bc;white-space:nowrap">${e.date}</td>
+    <td class="adm-tbl-td" style="max-width:200px"><div style="display:flex;flex-wrap:wrap;gap:3px">${e.symptoms.map(s=>'<span style="background:rgba(255,255,255,.05);color:#9aa0bc;border-radius:10px;padding:1px 8px;font-size:11px">'+s+'</span>').join('')}</div></td>
+    <td class="adm-tbl-td" style="max-width:200px"><div style="display:flex;flex-wrap:wrap;gap:3px">${e.confidences.map(c=>'<span style="background:'+rc[c.risk]+';color:'+rt[c.risk]+';border-radius:10px;padding:1px 8px;font-size:11px;font-weight:600">'+c.name+' <span style="opacity:.65">'+c.conf+'%</span></span>').join('')}</div></td>
+    <td class="adm-tbl-td"><span style="background:${rc[e.topRisk]};color:${rt[e.topRisk]};font-size:11px;font-weight:700;padding:3px 10px;border-radius:10px;text-transform:uppercase">${e.topRisk}</span></td>
+    <td class="adm-tbl-td"><button class="adm-action-btn adm-del-btn" onclick="deleteHistoryEntry(${e.id})">🗑</button></td>
+  </tr>`).join('');
+}
+
+// ═══ HEALTH REPORT DOWNLOAD ═══
+function downloadHealthReport(){
+  if(!lastAnalysisResult){toast('⚠️ No analysis to download. Run an assessment first.');return;}
+  const r=lastAnalysisResult;
+  const rc={high:'#c0392b',medium:'#c97b2a',low:'#1e7e5a'};
+  const rb={high:'#fde8e6',medium:'#fdf0e0',low:'#dff5ec'};
+
+  const labRowsHtml=r.labEntries.filter(l=>l.ok!==null).map(l=>`
+    <tr>
+      <td style="padding:9px 12px;border-bottom:1px solid #eee">${l.name}</td>
+      <td style="padding:9px 12px;border-bottom:1px solid #eee;font-weight:600">${l.val} ${l.unit}</td>
+      <td style="padding:9px 12px;border-bottom:1px solid #eee">${l.low}–${l.high} ${l.unit}</td>
+      <td style="padding:9px 12px;border-bottom:1px solid #eee"><span style="background:${l.ok?'#dff5ec':'#fde8e6'};color:${l.ok?'#1e7e5a':'#c0392b'};padding:2px 10px;border-radius:10px;font-size:12px;font-weight:600">${l.ok?'Normal':'Abnormal'}</span></td>
+    </tr>`).join('');
+
+  // Collect doctor & test recommendations
+  const seenDocs=new Set();const doctors=[];
+  const seenTests=new Set();const allTests=[];
+  r.predictions.forEach(d=>{
+    if(d.doctor&&!seenDocs.has(d.doctor.specialty)){seenDocs.add(d.doctor.specialty);doctors.push({...d.doctor,disease:d.name,risk:d.risk});}
+    (d.tests||[]).forEach(t=>{if(!seenTests.has(t.name)){seenTests.add(t.name);allTests.push({...t,disease:d.name});}});
+  });
+
+  const doctorSectionHtml=doctors.length?`
+    <div class="sec">
+      <div class="sec-title">👨‍⚕️ Recommended Doctor Specialties</div>
+      ${doctors.map(doc=>`<div style="background:#f5f2ec;border-radius:8px;padding:12px 14px;margin-bottom:8px;display:flex;gap:12px;align-items:flex-start">
+        <div style="font-size:1.5rem;flex-shrink:0">🩺</div>
+        <div><div style="font-weight:700;color:#1a7f74;font-size:14px">${doc.specialty}</div>
+        <div style="font-size:12px;color:#4a4a44;margin-top:2px">For: <strong>${doc.disease}</strong> — ${doc.reason}</div></div>
+      </div>`).join('')}
+    </div>`:'';
+
+  const testsSectionHtml=allTests.length?`
+    <div class="sec">
+      <div class="sec-title">🧬 Recommended Lab Tests</div>
+      <table><thead><tr><th>#</th><th>Test Name</th><th>Why It's Needed</th><th>Related Condition</th></tr></thead>
+      <tbody>${allTests.map((t,i)=>`<tr>
+        <td style="padding:9px 12px;border-bottom:1px solid #eee;font-weight:700;color:#1a7f74">${i+1}</td>
+        <td style="padding:9px 12px;border-bottom:1px solid #eee;font-weight:600">${t.name}</td>
+        <td style="padding:9px 12px;border-bottom:1px solid #eee;color:#4a4a44">${t.why}</td>
+        <td style="padding:9px 12px;border-bottom:1px solid #eee"><span style="background:#d4efec;color:#1a7f74;padding:2px 9px;border-radius:10px;font-size:11px;font-weight:600">${t.disease}</span></td>
+      </tr>`).join('')}</tbody></table>
+    </div>`:'';
+
+  const reportId='DNX-'+Date.now().toString(36).toUpperCase();
+  const html=`<!DOCTYPE html>
+<html lang="en"><head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>DIAGNOLYTIX Health Report – ${r.patient.name||'Patient'}</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:Arial,Helvetica,sans-serif;background:#f5f2ec;color:#1a1a18;font-size:14px;line-height:1.6}
+.wrap{max-width:780px;margin:0 auto;background:#fff;box-shadow:0 4px 40px rgba(0,0,0,.12)}
+.hdr{background:linear-gradient(135deg,#1a7f74,#0d5c54);padding:28px 36px;color:#fff;display:flex;justify-content:space-between;align-items:flex-start}
+.logo{font-size:1.7rem;font-weight:800;letter-spacing:-.04em}
+.logo-sub{font-size:9px;letter-spacing:.2em;text-transform:uppercase;opacity:.6;margin-top:2px}
+.hdr-meta{text-align:right;font-size:12px;opacity:.8;line-height:1.7}
+.hdr-meta strong{display:block;font-size:14px;opacity:1;color:#fff}
+.body{padding:28px 36px}
+.sec{margin-bottom:26px}
+.sec-title{font-size:12px;font-weight:700;color:#1a7f74;border-bottom:2px solid #d4efec;padding-bottom:7px;margin-bottom:14px;text-transform:uppercase;letter-spacing:.04em}
+.pgrid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
+.pitem{background:#f5f2ec;border-radius:8px;padding:10px 14px}
+.plbl{font-size:10px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:#8a8a80;margin-bottom:3px}
+.pval{font-size:14px;font-weight:600}
+.chips{display:flex;flex-wrap:wrap;gap:6px}
+.chip{background:#d4efec;color:#1a7f74;border-radius:14px;padding:4px 12px;font-size:12.5px;font-weight:500}
+.dcard{border:1.5px solid #eaeae0;border-radius:10px;padding:14px 16px;margin-bottom:12px}
+.dheader{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:7px}
+.dname{font-size:1rem;font-weight:700}
+.rbadge{font-size:11px;font-weight:700;padding:3px 10px;border-radius:10px;text-transform:uppercase}
+.cbwrap{margin-bottom:7px}
+.clbl{display:flex;justify-content:space-between;font-size:11px;color:#8a8a80;margin-bottom:3px}
+.cbar{height:5px;background:#eaeae0;border-radius:3px;overflow:hidden}
+.cfill{height:100%;border-radius:3px}
+.ddesc{font-size:13px;color:#4a4a44}
+.dexpl{font-size:12.5px;color:#4a4a44;margin-top:6px;padding-top:6px;border-top:1px solid #eee}
+.actions-box{background:#f0faf8;border:1px solid #c0e8e4;border-radius:8px;padding:10px 14px;margin-top:10px}
+.actions-title{font-size:11px;font-weight:700;text-transform:uppercase;color:#1a7f74;letter-spacing:.06em;margin-bottom:6px}
+.actions-list{margin:0;padding-left:16px}
+.actions-list li{font-size:12.5px;color:#2a4a44;margin-bottom:3px}
+table{width:100%;border-collapse:collapse}
+th{text-align:left;padding:8px 12px;font-size:10.5px;font-weight:700;letter-spacing:.07em;text-transform:uppercase;color:#8a8a80;border-bottom:2px solid #eaeae0;background:#f9f8f5}
+.disc{background:#fdf0e0;border:1.5px solid #f5d9a8;border-radius:10px;padding:14px 18px;display:flex;gap:12px}
+.disc p{font-size:12.5px;color:#c97b2a;font-weight:500}
+.ftr{background:#1a7f74;color:rgba(255,255,255,.7);padding:12px 36px;font-size:11.5px;display:flex;justify-content:space-between}
+.print-actions{text-align:center;padding:24px;background:#f5f2ec;border-top:1px solid #eaeae0}
+@media print{body{background:#fff}.print-actions{display:none!important}.wrap{box-shadow:none}@page{margin:10mm;size:A4}}
+</style></head>
+<body>
+<div class="wrap">
+  <div class="hdr">
+    <div><div class="logo">DIAGNOLYTIX</div><div class="logo-sub">Health Intelligence Platform</div></div>
+    <div class="hdr-meta"><strong>Health Assessment Report</strong>${r.date}<br>${reportId}</div>
+  </div>
+  <div class="body">
+    <div class="sec">
+      <div class="sec-title">👤 Patient Information</div>
+      <div class="pgrid">
+        <div class="pitem"><div class="plbl">Full Name</div><div class="pval">${r.patient.name||'—'}</div></div>
+        <div class="pitem"><div class="plbl">Age</div><div class="pval">${r.patient.age||'—'}</div></div>
+        <div class="pitem"><div class="plbl">Gender</div><div class="pval">${r.patient.gender||'—'}</div></div>
+      </div>
+    </div>
+    <div class="sec">
+      <div class="sec-title">🩹 Reported Symptoms</div>
+      <div class="chips">${r.symptoms.map(s=>`<span class="chip">${s.name} <span style="opacity:.6;font-size:11px">(${s.severity})</span></span>`).join('')}</div>
+    </div>
+    <div class="sec">
+      <div class="sec-title">🔬 Diagnostic Results</div>
+      ${r.predictions.map(d=>{
+        const acts=[];
+        if(d.doctor)acts.push(`Consult a <strong>${d.doctor.specialty}</strong>`);
+        (d.tests||[]).slice(0,3).forEach(t=>acts.push(t.name));
+        return`<div class="dcard">
+          <div class="dheader"><div class="dname">${d.name}</div><span class="rbadge" style="background:${rb[d.risk]};color:${rc[d.risk]}">${d.risk} Risk</span></div>
+          <div class="cbwrap"><div class="clbl"><span>Confidence Score</span><span>${d.conf}%</span></div><div class="cbar"><div class="cfill" style="width:${d.conf}%;background:${rc[d.risk]}"></div></div></div>
+          <div class="ddesc">${d.desc}</div>
+          ${d.expl?`<div class="dexpl">${d.expl}</div>`:''}
+          ${acts.length?`<div class="actions-box"><div class="actions-title">✅ Recommended Actions</div><ul class="actions-list">${acts.map(a=>`<li>${a}</li>`).join('')}</ul></div>`:''}
+        </div>`;
+      }).join('')}
+    </div>
+    ${doctorSectionHtml}
+    ${testsSectionHtml}
+    ${labRowsHtml?`<div class="sec">
+      <div class="sec-title">🧪 Lab Values Analysis</div>
+      <table><thead><tr><th>Test</th><th>Your Value</th><th>Normal Range</th><th>Status</th></tr></thead>
+      <tbody>${labRowsHtml}</tbody></table>
+    </div>`:''}
+    <div class="sec">
+      <div class="disc"><span style="font-size:1.3rem;flex-shrink:0">⚠️</span>
+        <p><strong>Medical Disclaimer:</strong> This report is generated by an AI-based health assessment tool for informational purposes only. It is NOT a substitute for professional medical advice, diagnosis, or treatment. Please consult a qualified healthcare professional before making any health decisions.</p>
+      </div>
+    </div>
+  </div>
+  <div class="print-actions">
+    <p style="color:#4a4a44;margin-bottom:14px;font-size:13.5px">Print this page or save as PDF using your browser's print function</p>
+    <button onclick="window.print()" style="background:#1a7f74;color:#fff;border:none;padding:13px 34px;border-radius:10px;font-size:15px;font-weight:700;cursor:pointer;margin-right:10px">🖨 Print / Save as PDF</button>
+    <button onclick="window.close()" style="background:#f5f2ec;color:#1a1a18;border:1.5px solid #d4cfc5;padding:12px 22px;border-radius:10px;font-size:14px;cursor:pointer">✕ Close</button>
+  </div>
+  <div class="ftr"><span>DIAGNOLYTIX Health Intelligence Platform</span><span>${reportId}</span></div>
+</div>
+</body></html>`;
+
+  // Reliable download — always use anchor click, never rely on window.open
+  try{
+    const blob=new Blob([html],{type:'text/html;charset=utf-8'});
+    const url=URL.createObjectURL(blob);
+    const a=document.createElement('a');
+    a.href=url;
+    a.download='DIAGNOLYTIX_Report_'+(r.patient.name||'Patient').replace(/\s+/g,'_')+'_'+Date.now()+'.html';
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    setTimeout(()=>URL.revokeObjectURL(url),5000);
+    toast('✅ Report downloaded! Open the file and print to save as PDF.');
+  }catch(e){
+    console.error(e);
+    toast('⚠️ Download failed. Try a different browser.');
+  }
+}
+</script>
+
+</body>
+</html>
